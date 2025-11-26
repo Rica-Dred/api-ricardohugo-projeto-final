@@ -1,0 +1,61 @@
+# Lau's Garden - Projeto
+
+Este é um projeto tem como intenção principal ajudar os meus pais na loja online de venda de plantas.
+
+## Sobre o Projeto
+
+O Lau's Garden foi criado com o objetivo de ser um espaço online agradável e informativo para amantes de plantas. O site apresenta uma variedade de plantas categorizadas, informações detalhadas sobre cada uma, uma secção de aprendizagem com vídeos e uma área para visualização de avaliações de clientes.
+
+O design é limpo, responsivo e focado na experiência do utilizador, utilizando tecnologias web modernas.
+
+## Funcionalidades
+- **NavBar:** Menu com link âncora para a secção galeria, link externo para o facebook e iframe com localização do espaço.
+- **Página Inicial:** Apresentação do projeto e uma galeria com as principais categorias de plantas.
+- **Páginas de Categoria:** Secções dedicadas para Rosas, Cactos (dividida em dois), Arbustos, Palmeiras, Árvores e Árvores de Fruto.
+- **Detalhes de Plantas:** Modais com tabelas com informações específicas sobre cada planta, como tipo, folhagem, altura e origem.
+- **Área de Aprendizagem:** Uma página com vídeos do YouTube incorporados para dar a conhecer algumas curiosidades sobre as plantas.
+- **Página de Avaliações:** Galeria de imagens navegável apartir das setas do teclado construida com lightbox para visualizar as avaliações dos clientes.
+- **Design Responsivo:** O layout adapta-se a diferentes tamanhos de ecrã.
+- **Animações:** Efeitos de animação subtis ao rolar a página, implementados com a biblioteca AOS.
+- **Contacto:** Um formulário de contacto simples para os utilizadores enviarem mensagens.
+
+## Tecnologias Utilizadas
+
+O projeto foi construído com as seguintes tecnologias e bibliotecas:
+
+- **HTML5:** Para a estrutura semântica do conteúdo.
+- **CSS3:** Para estilização personalizada, em conjunto com o Bootstrap.
+- **Bootstrap 5:** Framework CSS para a criação de um layout responsivo e componentes de interface.
+- **JavaScript:** Para interatividade, como os efeitos de *hover* e a validação de formulários.
+- **[AOS (Animate On Scroll)](https://michalsnik.github.io/aos/):** Biblioteca para animar elementos ao rolar a página.
+- **[Lightbox2](https://lokeshdhakar.com/projects/lightbox2/):** Biblioteca para criar galerias de imagens em pop-up.
+- **jQuery:** Utilizado como dependência para a biblioteca Lightbox2.
+
+## Estrutura de Ficheiros
+
+O projeto está organizado da seguinte forma:
+
+```
+Projeto/
+├── css/
+│   └── style.css
+├── fonts/
+├── img/
+│   ├── pagArbustos/
+│   ├── pagArvores/
+│   └── ... (outras pastas de imagens)
+├── javaScript/
+│   ├── animateOnScroll.js
+│   ├── jquery-1.11.0.min.js
+│   ├── lightbox.min.js
+│   ├── mouseOver.js
+│   └── verificarFormulario.js
+├── paginas/
+│   ├── pagAprendizagem/
+│   │   └── aprendizagem.html
+│   ├── pagAvaliacoes/
+│   │   └── avaliacoes.html
+│   └── ... (outras páginas de categorias)
+├── index.html
+└── Enunciado
+```

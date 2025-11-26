@@ -1,0 +1,1 @@
+SELECT * FROM LausGarden.Plantas;
