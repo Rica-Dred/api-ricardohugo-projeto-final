@@ -42,6 +42,7 @@ namespace LauGardensApi.Controllers
             var novoUtilizador = new Utilizador
             {
                 NomeUtilizador = utilizadorDto.NomeUtilizador,
+                Email = utilizadorDto.Email,
                 PasswordHash = utilizadorDto.PasswordHash,
                 Role = utilizadorDto.Role
             };
