@@ -25,7 +25,7 @@ public class PlantasController : ControllerBase
         return Ok(plantas);
     }
 
-    // GET: api/plantas/5
+    // GET: api/plantas/ID
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Planta>> GetPlanta(int id)
     {
@@ -36,14 +36,23 @@ public class PlantasController : ControllerBase
 
     // POST: api/plantas
     [HttpPost]
-    public async Task<ActionResult<Planta>> CreatePlanta(Planta planta)
+    public async Task<ActionResult<Planta>> CreatePlanta(PlantaCreateDto plantaDto)
     {
-        _context.Plantas.Add(planta);
+        var novaPlanta = new Planta
+        {
+            Nome = plantaDto.Nome,
+            Categoria = plantaDto.Categoria,
+            Preco = plantaDto.Preco,
+            Descricao = plantaDto.Descricao,
+            UrlImagem = plantaDto.UrlImagem
+        };
+
+        _context.Plantas.Add(novaPlanta);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetPlanta), new { id = planta.Id }, planta);
+        return Ok(novaPlanta);
     }
 
-    // PUT: api/plantas/5
+    // PUT: api/plantas/ID
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdatePlanta(int id, Planta planta)
     {
