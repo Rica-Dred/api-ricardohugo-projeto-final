@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   #Base de Dados 
   db:
@@ -18,7 +17,7 @@ services:
     image: redis:alpine  
     container_name: RedisLG
     ports:
-      - "6379:6379"      #Porta padrão Redis
+      - "6379:6379" #Porta padrão Redis
 
   #Imposter
   imposter:
