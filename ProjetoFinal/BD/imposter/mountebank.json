@@ -1,0 +1,34 @@
+{
+  "imposters": [
+    {
+      "port": 4545,
+      "protocol": "http",
+      "name": "API Inventario Mock",
+      "stubs": [
+        {
+          "predicates": [
+            {
+              "equals": {
+                "method": "GET",
+                "path": "/inventory/123"
+              }
+            }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "headers": { "Content-Type": "application/json" },
+                "body": {
+                  "sku": "123",
+                  "stock": 50,
+                  "status": "Available"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

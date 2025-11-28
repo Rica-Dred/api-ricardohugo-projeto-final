@@ -1,14 +1,35 @@
+version: '3.8'
 services:
+  #Base de Dados 
   db:
     image: mysql:latest
     container_name: Laus-Garden
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: projetofinaldb 
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+
+  #Redis Cache 
+  redis:
+    image: redis:alpine  
+    container_name: RedisLG
+    ports:
+      - "6379:6379"      #Porta padrão Redis
+
+  #Imposter
+  imposter:
+    image: bbyars/mountebank:latest
+    container_name: ImposterLG
+    ports:
+      - "2525:2525" 
+      - "4545:4545" # Porta API 
+    volumes:
+      - ./imposter:/mb_config
+    command: start --configfile /mb_config/mountebank.json --allowInjection
 
 volumes:
   mysql_data:
