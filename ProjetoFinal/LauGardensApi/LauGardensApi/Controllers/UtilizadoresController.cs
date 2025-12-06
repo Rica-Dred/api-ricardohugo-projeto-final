@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using Microsoft.Extensions.Caching.Distributed; // Para o Redis
+using System.Numerics;
+using System.Text.Json; //deserializar/serializar dados 
+
 namespace LauGardensApi.Controllers
 {
     [Route("api/[controller]")]
@@ -11,10 +15,12 @@ namespace LauGardensApi.Controllers
     public class UtilizadorController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IDistributedCache _cache;
 
-        public UtilizadorController(AppDbContext context)
+        public UtilizadorController(AppDbContext context, IDistributedCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         // GET: api/utilizadores
@@ -30,8 +36,26 @@ namespace LauGardensApi.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Utilizador>> GetUtilizador(int id)
         {
+            var dados = await _cache.GetStringAsync($"utilizador_{id}");
+            if(!string.IsNullOrEmpty(dados))
+            {
+                try
+                {
+                    return JsonSerializer.Deserialize<Utilizador>(dados);
+                }
+                catch (JsonException)
+                {
+                    Console.WriteLine("A apagar cache corrompido");
+                    await _cache.RemoveAsync($"utilizador_{id}");
+                }
+            }
+
             var utilizador = await _context.Utilizadores.FindAsync(id);
             if (utilizador == null) return NotFound();
+
+            var options = new DistributedCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+            await _cache.SetStringAsync($"utilizador_{id}", JsonSerializer.Serialize(utilizador), options);
+
             return utilizador;
         }
 
@@ -51,7 +75,7 @@ namespace LauGardensApi.Controllers
             return Ok(novoUtilizador);
         }
 
-        // PUT: api/utilizador/ID
+        // PUT: api/utilizador/ID - faz sentido
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateUtilizador(int id, Utilizador utilizador)
         {
@@ -59,10 +83,23 @@ namespace LauGardensApi.Controllers
 
             _context.Entry(utilizador).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Utilizadores.Any(e => e.Id == id)) 
+                    return NotFound();
+                else throw;
+            }
+
+            await _cache.RemoveAsync($"utilizador_{id}");
             return NoContent();
         }
 
-        // DELETE: api/utilizador/5
+        // DELETE: api/utilizador/id - faz sentido
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteUtilizador(int id)
         {
@@ -71,6 +108,8 @@ namespace LauGardensApi.Controllers
 
             _context.Utilizadores.Remove(utilizador);
             await _context.SaveChangesAsync();
+
+            await _cache.RemoveAsync($"utilizador_{id}");
             return NoContent();
         }
     }

@@ -2,6 +2,9 @@
 using LauGardensApi.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace LauGardensApi.Controllers
 {
@@ -10,10 +13,12 @@ namespace LauGardensApi.Controllers
     public class FuncionarioController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IDistributedCache _cache;
 
-        public FuncionarioController(AppDbContext context)
+        public FuncionarioController(AppDbContext context, IDistributedCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         // GET: api/funcionario
@@ -33,6 +38,26 @@ namespace LauGardensApi.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Funcionario>> GetFuncionario(int id)
         {
+            var dados = await _cache.GetStringAsync($"funcionario_{id}");
+            if (!string.IsNullOrEmpty(dados))
+            {
+                try
+                {
+                    // Como tens Includes (Utilizador, Stocks), precisamos de opções para ignorar ciclos
+                    var jsonOptions = new JsonSerializerOptions
+                    {
+                        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                        PropertyNameCaseInsensitive = true
+                    };
+                    return JsonSerializer.Deserialize<Funcionario>(dados, jsonOptions);
+                }
+                catch (JsonException)
+                {
+                    Console.WriteLine("A apagar cache corrompido");
+                    await _cache.RemoveAsync($"funcionario_{id}");
+                }
+            }
+
             var funcionario = await _context.Funcionarios
                 .Include(f => f.Utilizador)
                 .Include(f => f.Stocks)
@@ -44,13 +69,10 @@ namespace LauGardensApi.Controllers
         }
 
         // POST: api/funcionario
-        // Usa o FuncionarioCreateDto
         [HttpPost]
         public async Task<ActionResult<Funcionario>> CreateFuncionario(FuncionarioCreateDto funcionarioDto)
         {
-            // Aqui assumo que o FuncionarioCreateDto tem estas propriedades:
-            // int UtilizadorId, string Nome, string? Email, string? Telefone, string? Funcao
-            // Ajusta os nomes se no teu DTO forem diferentes.
+
             var novoFuncionario = new Funcionario
             {
                 Id = funcionarioDto.Id,
@@ -85,6 +107,7 @@ namespace LauGardensApi.Controllers
                 if (!existe) return NotFound();
                 throw;
             }
+            await _cache.RemoveAsync($"funcionario_{id}");
 
             return NoContent();
         }
@@ -98,6 +121,8 @@ namespace LauGardensApi.Controllers
 
             _context.Funcionarios.Remove(funcionario);
             await _context.SaveChangesAsync();
+
+            await _cache.RemoveAsync($"funcionario_{id}");
 
             return NoContent();
         }
