@@ -37,23 +37,19 @@ public class PlantasController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<object>>GetPlanta(int id, [FromServices] IAsyncCacheProvider cacheProvider)
     {
-        // 1. DEFINIR A POLÍTICA DE CACHE (Isto substitui o teu if manual)
-        // O Polly vai usar o teu 'cacheProvider' para verificar o Redis automaticamente
+        //politica de cache, Polly vai usar 'cacheProvider' para verificar o Redis automaticamente
         var cachePolicy = Policy.CacheAsync<object>(cacheProvider, TimeSpan.FromMinutes(10));
 
         try
         {
-            // 2. EXECUTAR VIA POLLY
-            // O código dentro deste bloco SÓ corre se o Polly não encontrar nada no cache
+            //so executado se o Polly não encontrar nada no cache
             var finalResult = await cachePolicy.ExecuteAsync(async (context) =>
             {
-                // === A TUA LÓGICA DE DADOS (Caminho Lento) ===
-
-                // A. Base de Dados
+                //BD
                 var planta = await _context.Plantas.FindAsync(id);
                 if (planta == null) return null;
 
-                // B. Polly Resiliência (Imposter)
+                //Polly Resiliência (Imposter)
                 var clientPolly = _clientFactory.CreateClient("ImposterApi");
                 object stockInfo = "Indisponivel";
 
@@ -68,19 +64,18 @@ public class PlantasController : ControllerBase
                 }
                 catch (Exception) { }
 
-                // C. Agregação
+                //Agregação
                 var result = new
                 {
                     DadosPlanta = planta,
                     StockExterno = stockInfo
                 };
 
-                // Retornar para que o Polly guarde no Redis
+                //Retornar para que o Polly guarde no Redis
                 return (object)result;
 
             }, new Context($"planta_{id}"));
 
-            // 3. RESULTADO FINAL
             if (finalResult == null) return NotFound();
 
             return Ok(finalResult);

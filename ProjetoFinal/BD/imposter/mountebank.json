@@ -3,16 +3,12 @@
     {
       "port": 4545,
       "protocol": "http",
-      "name": "API Inventario Mock",
+      "name": "API LausGarden",
       "stubs": [
         {
+          "//":"1.Disponivel",
           "predicates": [
-            {
-              "equals": {
-                "method": "GET",
-                "path": "/inventory/1"
-              }
-            }
+            { "equals": { "method": "GET", "path": "/inventario/1" } }
           ],
           "responses": [
             {
@@ -20,9 +16,121 @@
                 "statusCode": 200,
                 "headers": { "Content-Type": "application/json" },
                 "body": {
-                  "sku": "123",
-                  "stock": 50,
-                  "status": "Available"
+                  "stock": 15,
+                  "status": "Disponivel"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "//":"2.Sem stock",
+          "predicates": [
+            { "equals": { "method": "GET", "path": "/inventario/2" } }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "headers": { "Content-Type": "application/json" },
+                "body": {
+                  "stock": 0,
+                  "status": "Fora de stock"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "//":"3.Produto não encontrado",
+          "predicates": [
+            { "equals": { "method": "GET", "path": "/inventario/3" } }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 404,
+                "body": "Produto não encontrado"
+              }
+            }
+          ]
+        },
+        {
+          "//":"4.Falha",
+          "predicates": [
+            { "equals": { "method": "GET", "path": "/inventario/4" } }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 500,
+                "body": "Erro de sistema"
+              }
+            }
+          ]
+        },
+        {
+          "//":"5.Valor de stock negativo",
+          "predicates": [
+            { "equals": { "method": "GET", "path": "/inventario/5" } }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "headers": { "Content-Type": "application/json" },
+                "body": {
+                  "stock": -1,
+                  "status": "Erro"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "//":"6.Falta de permissões",
+          "predicates": [
+            { "equals": { "method": "GET", "path": "/inventario/6" } }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 403,
+                "body": "Acesso Negado, falta de permissões"
+              }
+            }
+          ]
+        },
+        {
+          "//":"7.Campo obrigatório em falta",
+          "predicates": [
+            { "equals": { "method": "GET", "path": "/inventario/7" } }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "headers": { "Content-Type": "application/json" },
+                "body": {
+                  "status": "Disponivel"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "//":"8. Fallback para qualquer outro ID",
+          "predicates": [
+            { "matches": { "method": "GET", "path": "^/inventario/\\d+$" } }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "headers": { "Content-Type": "application/json" },
+                "body": {
+                  "stock": 25,
+                  "status": "Disponivel"
                 }
               }
             }
