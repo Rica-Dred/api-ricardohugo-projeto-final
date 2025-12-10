@@ -1,5 +1,6 @@
 ﻿using LauGardensApi.Data;
 using LauGardensApi.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -10,6 +11,7 @@ namespace LauGardensApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class FuncionarioController : ControllerBase
     {
         private readonly AppDbContext _context;
