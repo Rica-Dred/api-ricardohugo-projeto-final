@@ -1,10 +1,13 @@
 using LauGardensApi.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
-
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Polly;
 using Polly.Extensions.Http;
+using Polly.Utilities;
+using Polly.Caching.Memory;
+using Polly.Caching;
+using LauGardensApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +16,8 @@ builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        //options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.WriteIndented = true; // opcional, só para o JSON ficar bonito
     });
 
@@ -32,15 +36,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 //Redis
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    // Tenta ler do appsettings.json, se não conseguir, usa localhost:6379 (o teu Docker)
+    // Tenta ler do appsettings.json, se não conseguir, usa localhost:6379 (Docker)
     options.Configuration = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
     options.InstanceName = "LauGardens_"; // Prefixo para não misturar chaves
 });
 
-//Configuração do POLLY (Resiliência para APIs Externas/Imposter)
-// 
+//Polly
+builder.Services.AddSingleton<IAsyncCacheProvider, PollyRedisAdapt>();
 
-// Define o que fazer quando falha (Retry): Tenta 3 vezes com tempo crescente
+
+//Configuração do POLLY 
+// Define o que fazer quando falha: Tenta 3 vezes 
 var retryPolicy = HttpPolicyExtensions
     .HandleTransientHttpError()
     .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
@@ -67,6 +73,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseHttpsRedirection(); //Redireciona p/ HTTPS
 app.UseAuthorization(); // Importante se formos adicionar JWT depois
 
 app.MapControllers();

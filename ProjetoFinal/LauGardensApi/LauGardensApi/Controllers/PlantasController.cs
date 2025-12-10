@@ -2,12 +2,13 @@
 using LauGardensApi.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 using Microsoft.Extensions.Caching.Distributed; // Para o Redis
-using System.Text.Json; //deserializar/serializar dados 
+using Polly;
+using Polly.Caching;
+using System.Text.Json;
+using System.Text.Json.Serialization; //deserializar/serializar dados 
 
 namespace LauGardensApi.Controllers;
-
 
 [ApiController]
 [Route("api/[controller]")]
@@ -15,11 +16,13 @@ public class PlantasController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IDistributedCache _cache; // Para o Redis
+    private readonly IHttpClientFactory _clientFactory; // P/Polly
 
-    public PlantasController(AppDbContext context, IDistributedCache cache)
+    public PlantasController(AppDbContext context, IDistributedCache cache, IHttpClientFactory clientFactory)
     {
         _context = context;
         _cache = cache; //guardar cache na variavel
+        _clientFactory = clientFactory; //"chefe logistica"
     }
 
     // GET: api/plantas
@@ -27,40 +30,65 @@ public class PlantasController : ControllerBase
     public async Task<ActionResult<IEnumerable<Planta>>> GetPlantas()
     {
         var plantas = await _context.Plantas.Include(p => p.Stock).ToListAsync();
-
         return Ok(plantas);
     }
 
     // GET: api/plantas/ID
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Planta>> GetPlanta(int id)
+    public async Task<ActionResult<object>>GetPlanta(int id, [FromServices] IAsyncCacheProvider cacheProvider)
     {
-        var dados = await _cache.GetStringAsync($"planta_{id}");
-        //caso haja em cache retorna o valor
-        if (!string.IsNullOrEmpty($"planta_{id}"))
+        // 1. DEFINIR A POLÍTICA DE CACHE (Isto substitui o teu if manual)
+        // O Polly vai usar o teu 'cacheProvider' para verificar o Redis automaticamente
+        var cachePolicy = Policy.CacheAsync<object>(cacheProvider, TimeSpan.FromMinutes(10));
+
+        try
         {
-            try
+            // 2. EXECUTAR VIA POLLY
+            // O código dentro deste bloco SÓ corre se o Polly não encontrar nada no cache
+            var finalResult = await cachePolicy.ExecuteAsync(async (context) =>
             {
-                return JsonSerializer.Deserialize<Planta>($"planta_{id}");
-            }
-            catch (JsonException)
-            {
-                // SE FALHAR
-                // Ignora o erro, apaga o cache estragado e segue para a BD
-                Console.WriteLine("Cache corrompido, a apagar...");
-                await _cache.RemoveAsync($"planta_{id}");
-            }
+                // === A TUA LÓGICA DE DADOS (Caminho Lento) ===
+
+                // A. Base de Dados
+                var planta = await _context.Plantas.FindAsync(id);
+                if (planta == null) return null;
+
+                // B. Polly Resiliência (Imposter)
+                var clientPolly = _clientFactory.CreateClient("ImposterApi");
+                object stockInfo = "Indisponivel";
+
+                try
+                {
+                    var response = await clientPolly.GetAsync($"/inventory/{id}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var jsonString = await response.Content.ReadAsStringAsync();
+                        stockInfo = JsonSerializer.Deserialize<object>(jsonString);
+                    }
+                }
+                catch (Exception) { }
+
+                // C. Agregação
+                var result = new
+                {
+                    DadosPlanta = planta,
+                    StockExterno = stockInfo
+                };
+
+                // Retornar para que o Polly guarde no Redis
+                return (object)result;
+
+            }, new Context($"planta_{id}"));
+
+            // 3. RESULTADO FINAL
+            if (finalResult == null) return NotFound();
+
+            return Ok(finalResult);
         }
-
-        //caso nao haja em cache vai buscar à base de dados (caminho mais longo)
-        var planta = await _context.Plantas.FindAsync(id);
-        if (planta == null) return NotFound();
-
-        //guardar em cache o valor obtido da base de dados
-        var options = new DistributedCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
-        await _cache.SetStringAsync($"planta_{id}", JsonSerializer.Serialize(planta), options);
-
-        return planta;
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 
     // POST: api/plantas
