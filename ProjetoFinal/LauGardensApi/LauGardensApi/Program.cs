@@ -15,15 +15,18 @@ using System.Text;
 using System.Text.Json.Serialization;
 
 
-var builder = WebApplication.CreateBuilder(args);
-
+var builder = WebApplication.CreateBuilder(
+    new WebApplicationOptions
+    {
+        WebRootPath = "Frontend",
+        Args = args
+    });
 
 builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-        //options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.WriteIndented = true; // opcional, só para o JSON ficar bonito
     });
 
@@ -38,7 +41,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         )
     ));
 
-
 //Redis
 builder.Services.AddStackExchangeRedisCache(options =>
 {
@@ -49,7 +51,6 @@ builder.Services.AddStackExchangeRedisCache(options =>
 
 //Polly
 builder.Services.AddSingleton<IAsyncCacheProvider, PollyRedisAdapt>();
-
 
 //Configuração do POLLY 
 // Define o que fazer quando falha: Tenta 3 vezes 
@@ -106,8 +107,11 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection(); //Redireciona p/ HTTPS
 
-app.UseAuthentication();
-app.UseAuthorization(); // Importante se formos adicionar JWT depois
+app.UseDefaultFiles(); // Serve o index.html por defeito
+app.UseStaticFiles(); // Serve ficheiros estáticos da pasta Frontend(wwwroot)
+
+app.UseAuthentication(); //Autenticação JWT
+app.UseAuthorization(); //Autorização JWT 
 
 
 app.MapControllers();
