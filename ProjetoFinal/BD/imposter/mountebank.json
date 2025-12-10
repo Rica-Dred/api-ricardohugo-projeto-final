@@ -10,7 +10,7 @@
             {
               "equals": {
                 "method": "GET",
-                "path": "/inventory/123"
+                "path": "/inventory/1"
               }
             }
           ],
