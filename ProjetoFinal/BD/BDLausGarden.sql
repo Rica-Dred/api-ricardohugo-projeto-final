@@ -146,26 +146,26 @@ INSERT INTO Plantas (Nome, Categoria, Preco, Descricao, UrlImagem) VALUES
 -- ----------------------------------------------------------------------------------------------------------------------------------------------
 -- Inserir Plantas - Árvores
 INSERT INTO Plantas (Nome, Categoria, Preco, Descricao, UrlImagem) VALUES
-    ('Oliveira', 'Árvores', 35.00,
+    ('Oliveira', 'Arvores', 35.00,
     'Árvore frutífera perene típica do Mediterrâneo.',
     '/img/pagArvores/Oliveira.png'),
 
-    ('Ficus Benjamina', 'Árvores', 29.90,
+    ('Ficus Benjamina', 'Arvores', 29.90,
     'Árvore ornamental perene com folhas verdes brilhantes.',
     '/img/pagArvores/FicusBenjamina.png');
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------
 -- Inserir Plantas - Árvores de Fruto
 INSERT INTO Plantas (Nome, Categoria, Preco, Descricao, UrlImagem) VALUES
-    ('Figueira', 'Árvores de Fruto', 30.00,
+    ('Figueira', 'Arvores de Fruto', 30.00,
     'Árvore caducifólia que produz figos doces.',
     '/img/pagArvoresFruto/Figueira.png'),
 
-    ('Nespereira', 'Árvores de Fruto', 32.00,
+    ('Nespereira', 'Arvores de Fruto', 32.00,
     'Árvore de frutos amarelos (nêsperas) de polpa doce.',
     '/img/pagArvoresFruto/Nespereira.png'),
 
-    ('Golden Delicious', 'Árvores de Fruto', 34.90,
+    ('Golden Delicious', 'Arvores de Fruto', 34.90,
     'Macieira que produz maçãs douradas doces e aromáticas.',
     '/img/pagArvoresFruto/Macieira.png');
 
@@ -179,8 +179,8 @@ SELECT p.Id,
             WHEN p.Categoria = 'Suculentas' THEN 35
             WHEN p.Categoria = 'Palmeiras' THEN 8
             WHEN p.Categoria = 'Arbustos' THEN 20
-            WHEN p.Categoria = 'Árvores' THEN 12
-            WHEN p.Categoria = 'Árvores de Fruto' THEN 10
+            WHEN p.Categoria = 'Arvores' THEN 12
+            WHEN p.Categoria = 'Arvores de Fruto' THEN 10
             ELSE 5 -- Quantidade predefinida para outras categorias
         END,
         (SELECT Id FROM Funcionarios WHERE Nome = 'Colaborador 1')
