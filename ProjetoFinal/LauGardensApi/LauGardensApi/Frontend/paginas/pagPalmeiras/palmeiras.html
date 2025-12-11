@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Lau's Garden - Palmeiras</title>
-  <link rel="icon" href="/ProjetoFinal/LauGardensApi/LauGardensApi/Frontend/img/logo/Lau'sGarden.ico">
+  <link rel="icon" href="../../img/logo/Lau'sGarden.ico">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="fonts/font-awesome/css/font-awesome.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-  <link rel="stylesheet" type="text/css" href="/ProjetoFinal/LauGardensApi/LauGardensApi/Frontend/css/style.css">
+  <link rel="stylesheet" type="text/css" href="../../css/style.css">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
 </head>
 
@@ -37,173 +37,14 @@
           <div class="card-text text-center section-title">
             <h2>Palmeiras</h2>
           </div>
-          <div class="row g-3">
-            <div class="col-sm-6 col-md-4 justify-content-center">
-              <div class="card h-100" data-aos="fade-in" data-aos-duration="1000">
-                <img src="/ProjetoFinal/LauGardensApi/LauGardensApi/Frontend/img/pagPalmeiras/PalmeirasLeque.png" class="card-img-top" alt="Washingtonia Filifera">
-                <div class="card-body text-center">
-                  <h5 class="card-title">Washingtonia Filifera</h5>
-                  <a class="cardInfo" class="cardInfo" onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" data-bs-toggle="modal" data-bs-target="#exampleModal1">Ver mais</a>
-                </div>
+          <div class="row g-3" id="plantas-container" data-categoria="Palmeiras">
+              <div class="col-12 text-center mt-4">
+                  <div class="spinner-border text-secondary" role="status">
+                      <span class="visually-hidden">A carregar plantas...</span>
+                  </div>
               </div>
-            </div>
-
-            <div class="modal" id="exampleModal1" aria-labelledby="modalLabel1" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel1">• Washingtonia Filifera</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                  </div>
-                  <div class="modal-body">
-                    <img src="/ProjetoFinal/LauGardensApi/LauGardensApi/Frontend/img/pagPalmeiras/PalmeirasLeque.png" alt="Washingtonia Info" style="max-width: 75%; display: block; margin: 0 auto;">
-                  </div>
-                  <div class="modal-footer d-flex justify-content-between">
-                    <div>
-                      <table style=" border-collapse: collapse;">
-                        <tr>
-                          <th style="padding: 6px; text-align: left;">Tipo</th>
-                          <td style="padding: 6px;">Palmeira ornamental</td>
-                        </tr>
-                        <tr>
-                          <th style="padding: 6px; text-align: left;">Folhagem</th>
-                          <td style="padding: 6px;">Grande folha em leque, verde e fibrosa</td>
-                        </tr>
-                        <tr>
-                          <th style="padding: 6px; text-align: left;">Altura</th>
-                          <td style="padding: 6px;">15–20 m (podendo ultrapassar 25m)</td>
-                        </tr>
-                        <tr>
-                          <th style="padding: 6px; text-align: left;">Tronco</th>
-                          <td style="padding: 6px;">Grosso, coberto por restos de folhas secas formando a “saia” característica</td>
-                        </tr>
-                        <tr>
-                          <th style="padding: 6px; text-align: left;"><br>Preço:</th>
-                          <td style="padding: 6px;"></td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div class="d-grid gap-2 col-6 mx-auto">
-                      <br>
-                      <button class="btn btn-outline-secondary" type="button">Adicionar ao Carrinho</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm-6 col-md-4 justify-content-center">
-              <div class="card h-100" data-aos="zoom-in-up" data-aos-duration="1000">
-                <img src="/ProjetoFinal/LauGardensApi/LauGardensApi/Frontend/img/pagPalmeiras/PhoenixCanariensis.png" class="card-img-top" alt="Phoenix Canariensis">
-                <div class="card-body text-center">
-                  <h5 class="card-title">Phoenix Canariensis</h5>
-                  <a class="cardInfo" onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" data-bs-toggle="modal" data-bs-target="#exampleModal2">Ver mais</a>
-                </div>
-              </div>
-            </div>
-
-            <div class="modal" id="exampleModal2" aria-labelledby="modalLabel2" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel2">• Phoenix Canariensis</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                  </div>
-                  <div class="modal-body">
-                    <img src="/ProjetoFinal/LauGardensApi/LauGardensApi/Frontend/img/pagPalmeiras/PhoenixCanariensis.png" alt="Phoenix Info" style="max-width: 75%; display: block; margin: 0 auto;">
-                  </div>
-                  <div class="modal-footer d-flex justify-content-between">
-                    <div>
-                      <table style=" border-collapse: collapse;">
-                        <tr>
-                          <th style="padding: 6px; text-align: left;">Tipo</th>
-                          <td style="padding: 6px;">Palmeira ornamental</td>
-                        </tr>
-                        <tr>
-                          <th style="padding: 6px; text-align: left;">Folhagem</th>
-                          <td style="padding: 6px;">Longa e arqueada, verde-escura, formando copa densa</td>
-                        </tr>
-                        <tr>
-                          <th style="padding: 6px; text-align: left;">Altura</th>
-                          <td style="padding: 6px;">10–20 m (em condições ideais pode ultrapassar 25 m)</td>
-                        </tr>
-                        <tr>
-                          <th style="padding: 6px; text-align: left;">Tronco</th>
-                          <td style="padding: 6px;">Único, robusto, espesso e coberto por bases foliares persistentes</td>
-                        </tr>
-                        <tr>
-                          <th style="padding: 6px; text-align: left;"><br>Preço:</th>
-                          <td style="padding: 6px;"></td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div class="d-grid gap-2 col-6 mx-auto">
-                      <br>
-                      <button class="btn btn-outline-secondary" type="button">Adicionar ao Carrinho</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm-6 col-md-4 justify-content-center">
-              <div class="card h-100" data-aos="fade-in" data-aos-duration="1000">
-                <img src="/ProjetoFinal/LauGardensApi/LauGardensApi/Frontend/img/pagPalmeiras/Coqueiros.png" class="card-img-top" alt="Syagrus">
-                <div class="card-body text-center">
-                  <h5 class="card-title">Syagrus</h5>
-                  <a class="cardInfo" onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" data-bs-toggle="modal" data-bs-target="#exampleModal3">Ver mais</a>
-                </div>
-              </div>
-            </div>
-
-            <div class="modal" id="exampleModal3" aria-labelledby="modalLabel3" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel3">• Syagrus</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                  </div>
-                  <div class="modal-body">
-                    <img src="/ProjetoFinal/LauGardensApi/LauGardensApi/Frontend/img/pagPalmeiras/Coqueiros.png" alt="Syagrus Info" style="max-width: 75%; display: block; margin: 0 auto;">
-                  </div>
-                  <div class="modal-footer d-flex justify-content-between">
-                    <div>
-                      <table style=" border-collapse: collapse;">
-                        <tr>
-                          <th style="padding: 6px; text-align: left;">Tipo</th>
-                          <td style="padding: 6px;">Palmeira ornamental e produtiva</td>
-                        </tr>
-                        <tr>
-                          <th style="padding: 6px; text-align: left;">Folhagem</th>
-                          <td style="padding: 6px;">Pena longa, arqueada e plumosa, verde-brilhante</td>
-                        </tr>
-                        <tr>
-                          <th style="padding: 6px; text-align: left;">Altura</th>
-                          <td style="padding: 6px;">8–15 m (pode chegar a 20 m em boas condições)</td>
-                        </tr>
-                        <tr>
-                          <th style="padding: 6px; text-align: left;">Tronco</th>
-                          <td style="padding: 6px;">Delgado, cinzento e liso, geralmente único</td>
-                        </tr>
-                        <tr>
-                          <th style="padding: 6px; text-align: left;">Frutos</th>
-                          <td style="padding: 6px;">Drupas alaranjadas, doces, muito apreciadas pela fauna</td>
-                        </tr>
-                        <tr>
-                          <th style="padding: 6px; text-align: left;"><br>Preço:</th>
-                          <td style="padding: 6px;"></td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div class="d-grid gap-2 col-6 mx-auto">
-                      <br>
-                      <button class="btn btn-outline-secondary" type="button">Adicionar ao Carrinho</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
+          <div id="modais-container"></div>
         </div>
       </div>
     </div>
@@ -216,14 +57,14 @@
       <h3 class="text-center">Veja também:</h3>
       <div class="categories text-center">
         <ul class="list-inline">
-          <li class="list-inline-item"><a onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" href="/paginas/pagRosas/rosas.html">Rosas</a></li>
-          <li class="list-inline-item"><a onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" href="/paginas/pagCactos/cactos.html">Cactos</a></li>
-          <li class="list-inline-item"><a onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" href="/paginas/pagArbustos/arbustos.html">Arbustos</a></li>
-          <li class="list-inline-item"><a onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" href="/paginas/pagArvores/arvores.html">Árvores</a></li>
-          <li class="list-inline-item"><a onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" href="/paginas/pagArvoresFruto/arvoresFruto.html">Árvores de Fruto</a></li>
+          <li class="list-inline-item"><a onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" href="../pagRosas/rosas.html">Rosas</a></li>
+          <li class="list-inline-item"><a onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" href="../pagCactos/cactos.html">Cactos</a></li>
+          <li class="list-inline-item"><a onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" href="../pagArbustos/arbustos.html">Arbustos</a></li>
+          <li class="list-inline-item"><a onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" href="../pagArvores/arvores.html">Árvores</a></li>
+          <li class="list-inline-item"><a onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" href="../pagArvoresFruto/arvoresFruto.html">Árvores de Fruto</a></li>
           <br><br>
-          <li class="list-inline-item"><a class="button" onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" href="/paginas/pagAvaliacoes/avaliacoes.html">Avaliações</a></li>            
-          <li class="list-inline-item"><a class="button" onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" href="/paginas/pagAprendizagem/aprendizagem.html">Saber Mais</a></li>
+          <li class="list-inline-item"><a class="button" onmouseover="mouseOver(this)" onmouseout="mouseOut(this)" href="../pagAvaliacoes/avaliacoes.html">Avaliações</a></li>            
+
         </ul>
       </div>
     </div>
@@ -252,10 +93,11 @@
 
 <!-- scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-<script src="/ProjetoFinal/LauGardensApi/LauGardensApi/Frontend/javaScript/mouseOver.js"></script>
-<script src="/ProjetoFinal/LauGardensApi/LauGardensApi/Frontend/javaScript/index/aos.js"></script>
+<script src="../../javaScript/mouseOver.js"></script>
+<script src="../../javaScript/aos.js"></script>
 <script> AOS.init({easing: 'ease-in-out-sine'});</script>
-<script src="/ProjetoFinal/LauGardensApi/LauGardensApi/Frontend/javaScript/verificarFormulario.js"></script>
+<script src="../../javaScript/verificarFormulario.js"></script>
+<script src="../../javaScript/plantas.js"></script>
 </body>
 
 <!-- footer-->

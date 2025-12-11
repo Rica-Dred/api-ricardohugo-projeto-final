@@ -23,6 +23,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Stock> Stocks { get; set; }
 
+    public virtual DbSet<Reserva> Reservas { get; set; }
+
     public virtual DbSet<Utilizador> Utilizadores { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
