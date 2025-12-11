@@ -5,12 +5,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Polly;
 using Polly.Caching;
 using Polly.Caching.Memory;
 using Polly.Extensions.Http;
 using Polly.Utilities;
+using System;
+using System.IO;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -100,6 +103,16 @@ builder.Services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// CORS - para que qualquer origem comunique com a API
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirTudo",
+        policy => policy
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
 var app = builder.Build();
 
 app.UseSwagger();
@@ -107,12 +120,28 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection(); //Redireciona p/ HTTPS
 
-app.UseDefaultFiles(); // Serve o index.html por defeito
-app.UseStaticFiles(); // Serve ficheiros estáticos da pasta Frontend(wwwroot)
+var frontendPath = Path.Combine(builder.Environment.ContentRootPath, "Frontend");
+
+// Serve o index.html por defeito
+app.UseDefaultFiles(new DefaultFilesOptions
+{
+    FileProvider = new PhysicalFileProvider(frontendPath),
+    RequestPath = ""
+});
+
+// Serve os ficheiros estáticos da pasta Frontend
+app.UseStaticFiles( new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(frontendPath),
+    RequestPath = ""
+}
+); 
 
 app.UseAuthentication(); //Autenticação JWT
 app.UseAuthorization(); //Autorização JWT 
 
+// CORS - Ativar Politica criada acima
+app.UseCors("PermitirTudo");
 
 app.MapControllers();
 
