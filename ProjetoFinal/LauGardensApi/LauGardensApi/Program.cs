@@ -30,7 +30,7 @@ builder.Services
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-        options.JsonSerializerOptions.WriteIndented = true; // opcional, só para o JSON ficar bonito
+        options.JsonSerializerOptions.WriteIndented = true; // opcional, sï¿½ para o JSON ficar bonito
     });
 
 // Usa a tua classe AppDbContext (do ficheiro que mostraste)
@@ -47,21 +47,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 //Redis
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    // Tenta ler do appsettings.json, se não conseguir, usa localhost:6379 (Docker)
+    // Tenta ler do appsettings.json, se nï¿½o conseguir, usa localhost:6379 (Docker)
     options.Configuration = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
-    options.InstanceName = "LauGardens_"; // Prefixo para não misturar chaves
+    options.InstanceName = "LauGardens_"; // Prefixo para nï¿½o misturar chaves
 });
 
 //Polly
 builder.Services.AddSingleton<IAsyncCacheProvider, PollyRedisAdapt>();
 
-//Configuração do POLLY 
+//Configuraï¿½ï¿½o do POLLY 
 // Define o que fazer quando falha: Tenta 3 vezes 
 var retryPolicy = HttpPolicyExtensions
     .HandleTransientHttpError()
     .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
-// Define o disjuntor (Circuit Breaker): Se falhar 5 vezes, pára por 30 segundos
+// Define o disjuntor (Circuit Breaker): Se falhar 5 vezes, pï¿½ra por 30 segundos
 var circuitBreakerPolicy = HttpPolicyExtensions
     .HandleTransientHttpError()
     .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
@@ -108,9 +108,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirTudo",
         policy => policy
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+            .AllowAnyOrigin() 
+            .AllowAnyMethod() //qualquer mï¿½todo (GET, POST, etc)
+            .AllowAnyHeader()); //qualquer cabeï¿½alho
 });
 
 var app = builder.Build();
@@ -129,7 +129,7 @@ app.UseDefaultFiles(new DefaultFilesOptions
     RequestPath = ""
 });
 
-// Serve os ficheiros estáticos da pasta Frontend
+// Serve os ficheiros estï¿½ticos da pasta Frontend
 app.UseStaticFiles( new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(frontendPath),
@@ -137,8 +137,8 @@ app.UseStaticFiles( new StaticFileOptions
 }
 ); 
 
-app.UseAuthentication(); //Autenticação JWT
-app.UseAuthorization(); //Autorização JWT 
+app.UseAuthentication(); //Autenticaï¿½ï¿½o JWT
+app.UseAuthorization(); //Autorizaï¿½ï¿½o JWT 
 
 // CORS - Ativar Politica criada acima
 app.UseCors("PermitirTudo");
