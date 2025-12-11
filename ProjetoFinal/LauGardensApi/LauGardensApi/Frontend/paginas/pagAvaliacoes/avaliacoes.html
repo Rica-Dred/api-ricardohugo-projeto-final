@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lau's Garden - Avaliações</title>
+  <link rel="icon" href="../../img/logo/Lau'sGarden.ico">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="fonts/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" type="text/css" href="../../css/style.css">
+  <style>
+    .star-rating { color: #ffc107; }
+    .review-card { transition: transform 0.2s; }
+    .review-card:hover { transform: translateY(-5px); }
+  </style>
+</head>
+
+<body>
+<!-- NavBar -->
+ <nav class="navbar navbar-expand-lg fixed-top" style="background-color: rgb(47, 70, 58);">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="../index.html"><span>Lau's Garden</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" href="#"><span class="navOptions">Ver Carrinho</span></a>
+        <a class="nav-link" href="https://www.facebook.com/profile.php?id=61577942224345" target="_blank"><span class="navOptions">Siga-nos</span></a>
+      </div>
+  </div>
+</nav> 
+
+<div class="container mt-5 pt-5 mb-5">
+  <div class="card shadow bg-light bg-opacity-75 p-4 mx-auto" style="max-width: 900px;">
+    
+    <div class="text-center mb-4">
+      <h2 class="section-title">Avaliações dos Clientes</h2>
+      <p>Veja o que os nossos clientes dizem sobre nós.</p>
+    </div>
+
+    <!-- Lista de Avaliações -->
+    <div id="reviews-container" class="row g-3 mb-5">
+      <!-- Avaliações serão carregadas dinamicamente aqui -->
+    </div>
+
+    <hr>
+
+    <!-- Formulário de Nova Avaliação -->
+    <div class="mt-4">
+      <h3 class="text-center mb-3">Deixe a sua Avaliação</h3>
+      <form id="reviewForm">
+        <div class="mb-3">
+            <label for="nomeCliente" class="form-label">Nome:</label>
+            <input type="text" class="form-control" id="nomeCliente" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Classificação:</label>
+            <div class="rating">
+                <div class="btn-group" role="group" aria-label="Rating">
+                    <input type="radio" class="btn-check" name="rating" id="star1" value="1" autocomplete="off">
+                    <label class="btn btn-outline-warning" for="star1">1 <i class="bi bi-star-fill"></i></label>
+
+                    <input type="radio" class="btn-check" name="rating" id="star2" value="2" autocomplete="off">
+                    <label class="btn btn-outline-warning" for="star2">2 <i class="bi bi-star-fill"></i></label>
+
+                    <input type="radio" class="btn-check" name="rating" id="star3" value="3" autocomplete="off">
+                    <label class="btn btn-outline-warning" for="star3">3 <i class="bi bi-star-fill"></i></label>
+
+                    <input type="radio" class="btn-check" name="rating" id="star4" value="4" autocomplete="off">
+                    <label class="btn btn-outline-warning" for="star4">4 <i class="bi bi-star-fill"></i></label>
+
+                    <input type="radio" class="btn-check" name="rating" id="star5" value="5" autocomplete="off" checked>
+                    <label class="btn btn-outline-warning" for="star5">5 <i class="bi bi-star-fill"></i></label>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="comentario" class="form-label">Comentário:</label>
+            <textarea class="form-control" id="comentario" rows="3" required></textarea>
+        </div>
+        <div class="d-grid gap-2 col-md-4 mx-auto">
+            <button type="submit" class="btn text-white" style="background-color: rgb(47, 70, 58);">Submeter Avaliação</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<footer id="footer" class="py-1 text-white" style="background-color: rgb(47, 70, 58);">
+  <div class="container text-center">
+    <p class="mt-3 mb-0 text-white">© 2025 Lau's Garden. Todos os direitos reservados.</p>
+    <br>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Mock Data e Lógica de Avaliações
+    const reviewsContainer = document.getElementById("reviews-container");
+    const reviewForm = document.getElementById("reviewForm");
+
+    // Tenta carregar do localStorage, ou usa padrão
+    let reviews = JSON.parse(localStorage.getItem("lauGardenReviews")) || [
+        { nome: "Maria Silva", rating: 5, comentario: "Plantas maravilhosas! Chegaram em perfeito estado." },
+        { nome: "João Pedro", rating: 4, comentario: "Bom serviço, entrega rápida." },
+        { nome: "Ana Costa", rating: 5, comentario: "Adorei a minha oliveira. Recomendo muito!" }
+    ];
+
+    function renderReviews() {
+        reviewsContainer.innerHTML = "";
+        reviews.forEach(review => {
+            const stars = Array(5).fill('<i class="bi bi-star"></i>');
+            for(let i=0; i<review.rating; i++) stars[i] = '<i class="bi bi-star-fill"></i>';
+            
+            const col = document.createElement("div");
+            col.className = "col-md-4";
+            col.innerHTML = `
+                <div class="card h-100 review-card">
+                    <div class="card-body">
+                        <h5 class="card-title">${review.nome}</h5>
+                        <div class="star-rating mb-2">${stars.join('')}</div>
+                        <p class="card-text">"${review.comentario}"</p>
+                    </div>
+                </div>
+            `;
+            reviewsContainer.appendChild(col);
+        });
+    }
+
+    reviewForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const nome = document.getElementById("nomeCliente").value;
+        const rating = document.querySelector('input[name="rating"]:checked').value;
+        const comentario = document.getElementById("comentario").value;
+
+        const newReview = { nome, rating: parseInt(rating), comentario };
+        reviews.push(newReview);
+        localStorage.setItem("lauGardenReviews", JSON.stringify(reviews));
+        
+        renderReviews();
+        reviewForm.reset();
+        alert("Obrigado pela sua avaliação!");
+    });
+
+    // Inicialização
+    renderReviews();
+</script>
+
+</body>
+</html>
