@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,8 +13,8 @@
 </head>
 
 <body>
-<section>
-  <div class="checkout"></div>
+  <section>
+    <div class="checkout"></div>
     <div class="card shadow bg-light bg-opacity-75 mt-4 mb-5" style="width: 55%; margin: 0 auto;">
       <div class="card-body">
         <div class="p-3">
@@ -22,54 +23,41 @@
               <h2>Checkout</h2>
             </div>
             <form action="#" class="mt-3">
-              <h5 class="mb-3">Informação Pessoal</h5>
-              <input type="text" class="form-control mb-3" placeholder="Nome Completo" required>
-              <input type="email" class="form-control mb-3" placeholder="Email" required>
+              <h5 class="mb-3">Dados Pessoais</h5>
+              <input type="text" class="form-control mb-3" placeholder="Nome" required>
+              <input type="text" class="form-control mb-3" placeholder="NIF" required>
               <input type="text" class="form-control mb-3" placeholder="Telemóvel" required>
-
-              <h5 class="mt-4 mb-3">Endereço de Envio</h5>
-              <input type="text" class="form-control mb-3" placeholder="Morada" required>
-              <input type="text" class="form-control mb-3" placeholder="Cidade" required>
-              <input type="text" class="form-control mb-3" placeholder="Código Postal" required>
 
               <h5 class="mt-4 mb-3">Método de Pagamento</h5>
               <select class="form-select mb-3" required>
                 <option value="" disabled selected>Selecione o método de pagamento</option>
                 <option value="mbway">MB Way</option>
-                <option value="cartao">Cartão de Crédito/Débito</option>
-                <option value="paypal">PayPal</option>
+                <option value="transferencia">Transferência</option>
               </select>
 
               <h5 class="mt-4 mb-3">Resumo da Compra</h5>
               <ul class="list-group mb-3">
-                <li class="list-group-item d-flex justify-content-between">
-                  <span>Produto Exemplo</span>
-                  <strong>€20,00</strong>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                  <span>Envio</span>
-                  <strong>€4,00</strong>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                  <span>Total</span>
-                  <strong>€24,00</strong>
-                </li>
+                <!-- Items will be loaded by checkout.js -->
               </ul>
 
               <div class="text-center">
-                <button class="btn btn-outline-success w-50" type="submit">Finalizar Compra</button>
+                <button class="btn w-50" style="background-color: rgb(47, 70, 58); color: white;"
+                  type="submit">Finalizar Compra</button>
               </div>
             </form>
 
             <div class="extra-links text-center mt-3">
-              <p><a href="./login.html">Voltar ao Login</a></p>
+              <p><a href="./index.html">Voltar à loja</a></p>
             </div>
 
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+    </div>
+  </section>
+
+  <script src="../javaScript/checkout.js"></script>
 </body>
+
 </html>
