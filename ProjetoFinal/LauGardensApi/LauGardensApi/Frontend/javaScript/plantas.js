@@ -24,12 +24,23 @@ async function carregarPlantas() {
         if (!response.ok) throw new Error("Erro ao carregar plantas da API");
 
         const todasPlantas = await response.json();
-        const plantasFiltradas = todasPlantas.filter(p => p.categoria === categoriaAlvo);
+        const plantasFiltradas = todasPlantas.filter(p => {
+            if (!p.categoria) return false;
+            return p.categoria.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() === categoriaAlvo.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        });
 
         container.innerHTML = "";
 
         if (plantasFiltradas.length === 0) {
-            container.innerHTML = `<p class='text-center mt-3'>Não foram encontradas plantas na categoria "${categoriaAlvo}".</p>`;
+            // Retrieve unique categories for debugging
+            const categoriasDisponiveis = [...new Set(todasPlantas.map(p => p.categoria))].join(", ");
+            const debugInfo = categoriasDisponiveis ? `Categorias encontradas na API: ${categoriasDisponiveis}` : "Nenhuma categoria encontrada na API.";
+
+            container.innerHTML = `
+                <div class='col-12 text-center mt-3'>
+                    <p class='text-warning'>Não foram encontradas plantas na categoria "${categoriaAlvo}".</p>
+                    <p class='text-muted small'>${debugInfo}</p>
+                </div>`;
             return;
         }
 
@@ -43,7 +54,7 @@ async function carregarPlantas() {
             const plantaJson = JSON.stringify(p).replace(/'/g, "&#39;").replace(/"/g, "&quot;");
 
             col.innerHTML = `
-                <div class="card h-100" data-aos="fade-in" data-aos-duration="1000">
+                <div class="card h-100">
                     <img src="${imagemUrl}" class="card-img-top" alt="${p.nome}">
                     <div class="card-body text-center">
                         <h5 class="card-title">${p.nome}</h5>
@@ -83,74 +94,28 @@ function criarModalGenerico(id) {
           <div class="modal-body text-center">
             <img id="modalImagem" src="" alt="" style="max-width: 75%; display: block; margin: 0 auto 15px;">
             <p id="modalDescricao" class="text-start"></p>
-            <p id="modalPreco" class="fw-bold"></p>
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span id="modalPreco" class="fw-bold fs-5"></span>
+                <span id="modalStock" class="badge bg-secondary"></span>
+            </div>
 
             <hr>
-            <h6 class="text-start">Reservar Planta</h6>
-            <form id="reservaForm" class="text-start">
-                <input type="hidden" id="reservaPlantaId">
-                <div class="mb-2">
-                    <label for="reservaNome" class="form-label">Nome:</label>
-                    <input type="text" class="form-control" id="reservaNome" required>
-                </div>
-                <div class="mb-2">
-                    <label for="reservaContacto" class="form-label">Contacto (Email/Tel):</label>
-                    <input type="text" class="form-control" id="reservaContacto" required>
-                </div>
-                <div class="d-grid mt-3">
-                    <button type="submit" class="btn btn-success">Confirmar Reserva</button>
-                </div>
-            </form>
-            <div id="reservaMensagem" class="mt-2"></div>
+            
+            <div class="d-grid gap-2">
+                <button id="btnAdicionarCarrinho" type="button" class="btn p-2"  style="background-color: rgb(47, 70, 58); color: white;">
+                    Adicionar ao Carrinho <i class="bi bi-cart-plus"></i>
+                </button>
+            </div>
+            <div id="carrinhoMensagem" class="mt-2"></div>
 
           </div>
         </div>
       </div>
     </div>`;
     document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-    // Attach generic submit handler once
-    document.addEventListener("submit", async function (e) {
-        if (e.target && e.target.id === "reservaForm") {
-            e.preventDefault();
-            const plantaId = document.getElementById("reservaPlantaId").value;
-            const nome = document.getElementById("reservaNome").value;
-            const contacto = document.getElementById("reservaContacto").value;
-            const msgDiv = document.getElementById("reservaMensagem");
-
-            msgDiv.innerHTML = "<span class='text-primary'>A processar...</span>";
-
-            try {
-                const response = await fetch("/api/Reservas", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        NomeCliente: nome,
-                        Contacto: contacto,
-                        PlantaId: parseInt(plantaId)
-                    })
-                });
-
-                if (response.ok) {
-                    msgDiv.innerHTML = "<span class='text-success'>Reserva efetuada com sucesso! Entre em contacto para levantamento.</span>";
-                    e.target.reset();
-                    setTimeout(() => {
-                        const modalEl = document.getElementById("modalPlantaGenerico");
-                        const modal = bootstrap.Modal.getInstance(modalEl);
-                        modal.hide();
-                        msgDiv.innerHTML = "";
-                    }, 3000);
-                } else {
-                    const errText = await response.text();
-                    msgDiv.innerHTML = `<span class='text-danger'>Erro: ${errText}</span>`;
-                }
-            } catch (err) {
-                console.error(err);
-                msgDiv.innerHTML = "<span class='text-danger'>Erro de comunicação com o servidor.</span>";
-            }
-        }
-    });
 }
+
 
 
 // Global function called by onclick
@@ -160,8 +125,9 @@ window.abrirModal = function (planta) {
     const modalImagem = document.getElementById("modalImagem");
     const modalDescricao = document.getElementById("modalDescricao");
     const modalPreco = document.getElementById("modalPreco");
-    const reservaPlantaId = document.getElementById("reservaPlantaId");
-    const reservaMensagem = document.getElementById("reservaMensagem");
+    const modalStock = document.getElementById("modalStock");
+    const btnCarrinho = document.getElementById("btnAdicionarCarrinho");
+    const carrinhoMensagem = document.getElementById("carrinhoMensagem");
 
     modalTitulo.innerText = "• " + planta.nome;
     modalImagem.src = processarImagemUrl(planta.urlImagem);
@@ -171,17 +137,55 @@ window.abrirModal = function (planta) {
     modalDescricao.innerText = planta.descricao || "Sem descrição disponível.";
 
     if (planta.preco) {
-        modalPreco.innerText = `Preço: ${Number(planta.preco).toFixed(2)} €`;
+        modalPreco.innerText = `${Number(planta.preco).toFixed(2)} €`;
     } else {
         modalPreco.innerText = "";
     }
 
-    // Set hidden ID for reservation
-    reservaPlantaId.value = planta.id;
-    reservaMensagem.innerHTML = ""; // Clear previous messages
+    if (planta.stock && planta.stock.quantidade > 0) {
+        modalStock.innerText = `Stock: ${planta.stock.quantidade}`;
+        btnCarrinho.disabled = false;
+    } else {
+        modalStock.innerText = "Sem Stock";
+        btnCarrinho.disabled = true;
+    }
+
+    carrinhoMensagem.innerHTML = ""; // Clear previous messages
+
+    // Update Button Click Logic
+    btnCarrinho.onclick = function () {
+        adicionarAoCarrinho(planta);
+    };
 
     const modal = new bootstrap.Modal(modalEl);
     modal.show();
 };
+
+function adicionarAoCarrinho(planta) {
+    let carrinho = JSON.parse(localStorage.getItem('lausGardenCart')) || [];
+    const itemExistente = carrinho.find(item => item.id === planta.id);
+
+    if (itemExistente) {
+        itemExistente.quantidade += 1;
+    } else {
+        carrinho.push({
+            id: planta.id,
+            nome: planta.nome,
+            preco: planta.preco,
+            imagem: planta.urlImagem,
+            quantidade: 1
+        });
+    }
+
+    localStorage.setItem('lausGardenCart', JSON.stringify(carrinho));
+
+    const msgDiv = document.getElementById("carrinhoMensagem");
+    msgDiv.innerHTML = "<span class='text-success fw-bold'>Adicionado ao carrinho!</span>";
+
+    // Optional timeout to clear message
+    setTimeout(() => {
+        msgDiv.innerHTML = "";
+    }, 2000);
+}
 
 document.addEventListener("DOMContentLoaded", carregarPlantas);
