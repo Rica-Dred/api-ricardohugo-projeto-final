@@ -22,15 +22,17 @@
           <div class="container-fluid">
             <div class="card-text text-center section-title">
               <h2>Sign In</h2>
-              <form action="#">
-                <input type="name" placeholder="Nome" required>
-                <br><br>
-                <input type="birthday" placeholder="Data de Nascimento" required>
-                <br><br>
-                <input type="password" placeholder="Palavra-Passe" required>
-                <br><br>
-                <button class="btn btn-outline-secondary" type="submit">Sign In</button>
+              <form id="formSignIn">
+                <input id="inputUser" type="text" placeholder="Nome de Utilizador" required class="form-control mb-3">
+                <input id="inputPass" type="password" placeholder="Palavra-Passe" required class="form-control mb-3">
+                <input id="inputConfirmPass" type="password" placeholder="Confirmar Palavra-Passe" required
+                  class="form-control mb-3">
+
+                <button class="btn btn-outline-secondary" type="submit">Criar Conta</button>
               </form>
+              <div class="mt-3">
+                <a href="login.html">Já tenho conta</a>
+              </div>
             </div>
           </div>
         </div>
@@ -38,6 +40,7 @@
     </div>
     </div>
   </section>
+  <script src="../javaScript/signIn.js"></script>
 </body>
 
 </html>
