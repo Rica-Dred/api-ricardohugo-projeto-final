@@ -177,14 +177,7 @@
     AOS.init({ easing: 'ease-in-out-sine' });
 
     // Access Control
-    document.addEventListener("DOMContentLoaded", () => {
-      const role = localStorage.getItem("role");
-      const adminLink = document.querySelector("a[href='./gerirPlantas.html']");
-
-      if (role !== "colaborador" && role !== "admin") {
-        if (adminLink) adminLink.style.display = "none";
-      }
-    });
+    // Access Control removido daqui - Agora é gerido centralmente pelo mouseOver.js
   </script>
 </body>
 

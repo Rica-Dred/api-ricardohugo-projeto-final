@@ -73,9 +73,11 @@ CREATE TABLE IF NOT EXISTS Reservas (
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------
 -- Inserir Utilizadores
-INSERT INTO Utilizadores (NomeUtilizador, PasswordHash, Role) VALUES
-    ('admin', 'admin', 'admin'),
-    ('func1', 'func1', 'colaborador');
+-- Inserir Utilizadores
+INSERT INTO Utilizadores (Id, NomeUtilizador, PasswordHash, Role) VALUES
+    (1, 'admin', 'admin123', 'admin'),
+    (2, 'func1', 'func123', 'func'),
+    (3, 'user1', 'user123', 'cliente');
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------
 -- Inserir Funcionários 

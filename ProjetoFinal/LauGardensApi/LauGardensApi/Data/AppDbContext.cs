@@ -101,6 +101,20 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Role)
                 .HasMaxLength(20)
                 .HasDefaultValueSql("'colaborador'");
+
+            // SEED DATA
+            entity.HasData(
+                new Utilizador { Id = 1, NomeUtilizador = "admin", PasswordHash = "admin123", Role = "admin" },
+                new Utilizador { Id = 2, NomeUtilizador = "func1", PasswordHash = "func123", Role = "func" },
+                new Utilizador { Id = 3, NomeUtilizador = "user1", PasswordHash = "user123", Role = "cliente" }
+            );
+        });
+
+        modelBuilder.Entity<Funcionario>(entity =>
+        {
+            entity.HasData(
+                new Funcionario { Id = 1, UtilizadorId = 2, Nome = "Funcionario 1", Funcao = "Gestor de Stock" }
+            );
         });
 
         OnModelCreatingPartial(modelBuilder);

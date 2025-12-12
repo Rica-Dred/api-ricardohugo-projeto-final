@@ -74,9 +74,13 @@ async function carregarPlantas() {
 
 function processarImagemUrl(url) {
     if (!url) return "";
+
+    // Se o URL vier da BD como "/img/...", e nós estivermos em "paginas/categoria/ficheiro.html",
+    // precisamos de subir 2 níveis (../../) para chegar à raiz do "Frontend" onde está a pasta "img".
     if (url.startsWith("/img/")) {
         return "../.." + url;
     } else if (!url.startsWith("/")) {
+        // Se vier sem barra inicial, assume-se que precisa de subir na mesma
         return "../../" + url;
     }
     return url;

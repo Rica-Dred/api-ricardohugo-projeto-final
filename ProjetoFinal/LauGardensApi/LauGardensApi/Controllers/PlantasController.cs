@@ -8,6 +8,9 @@ using Polly.Caching;
 using System.Text.Json;
 using System.Text.Json.Serialization; //deserializar/serializar dados 
 
+using System.Text.Json.Serialization; //deserializar/serializar dados 
+using Microsoft.AspNetCore.Authorization;
+
 namespace LauGardensApi.Controllers;
 
 [ApiController]
@@ -88,6 +91,7 @@ public class PlantasController : ControllerBase
 
     // POST: api/plantas
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<ActionResult<Planta>> CreatePlanta(PlantaCreateDto plantaDto)
     {
         var novaPlanta = new Planta
@@ -106,6 +110,7 @@ public class PlantasController : ControllerBase
 
     // PUT: api/plantas/ID
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> UpdatePlanta(int id, Planta planta)
     {
 
@@ -121,6 +126,7 @@ public class PlantasController : ControllerBase
 
     // DELETE: api/plantas/ID
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> DeletePlanta(int id)
     {
 

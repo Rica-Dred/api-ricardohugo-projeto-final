@@ -3,6 +3,9 @@ using LauGardensApi.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+
 namespace LauGardensApi.Controllers;
 
 [ApiController]
@@ -17,6 +20,7 @@ public class ReservasController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "cliente")]
     public async Task<ActionResult<Reserva>> CreateReserva(Reserva reserva)
     {
         // Validação básica

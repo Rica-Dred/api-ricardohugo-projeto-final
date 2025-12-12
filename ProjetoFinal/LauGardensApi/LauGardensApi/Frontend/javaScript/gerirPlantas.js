@@ -21,6 +21,23 @@ async function carregarPlantas() {
             return;
         }
 
+        const role = sessionStorage.getItem("role");
+
+        // Hide "Adicionar Planta" form if not admin
+        const formContainer = document.querySelector(".card.p-4.mb-4"); // Adjust selector based on HTML structure
+        const formTitle = document.querySelector("h4.mb-3"); // "Adicionar Nova Planta" title
+
+        if (role !== "admin") {
+            // Esconder o formulário de criação
+            const form = document.getElementById("addPlantaForm");
+            if (form) {
+                // Tenta esconder o card inteiro se conseguir encontrar o pai
+                const card = form.closest('.card');
+                if (card) card.style.display = 'none';
+                else form.style.display = 'none';
+            }
+        }
+
         plantas.forEach(p => {
             const tr = document.createElement("tr");
 
@@ -28,6 +45,17 @@ async function carregarPlantas() {
             let imgUrl = p.urlImagem;
             if (imgUrl && !imgUrl.startsWith("http") && !imgUrl.startsWith("/")) {
                 imgUrl = "../" + imgUrl; // Attempt relative adjustment if needed
+            }
+
+            // Delete button is ONLY for Admin
+            let deleteButtonHtml = "";
+            if (role === "admin") {
+                deleteButtonHtml = `
+                    <button class="btn btn-sm btn-outline-danger" onclick="removerPlanta(${p.id}, '${p.nome}')">
+                        <i class="bi bi-trash"></i> Apagar
+                    </button>`;
+            } else {
+                deleteButtonHtml = `<span class="text-muted"><small>N/A</small></span>`;
             }
 
             tr.innerHTML = `
@@ -43,9 +71,7 @@ async function carregarPlantas() {
                     </div>
                 </td>
                 <td class="text-end">
-                    <button class="btn btn-sm btn-outline-danger" onclick="removerPlanta(${p.id}, '${p.nome}')">
-                        <i class="bi bi-trash"></i> Apagar
-                    </button>
+                    ${deleteButtonHtml}
                 </td>
             `;
             tbody.appendChild(tr);
@@ -74,9 +100,13 @@ function setupForm() {
         };
 
         try {
+            const token = sessionStorage.getItem("token");
+            const headers = { "Content-Type": "application/json" };
+            if (token) headers["Authorization"] = `Bearer ${token}`;
+
             const response = await fetch(API_URL, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: headers,
                 body: JSON.stringify(novaPlanta)
             });
 
@@ -101,8 +131,13 @@ window.removerPlanta = async function (id, nome) {
     }
 
     try {
+        const token = sessionStorage.getItem("token");
+        const headers = {};
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
         const response = await fetch(`${API_URL}/${id}`, {
-            method: "DELETE"
+            method: "DELETE",
+            headers: headers
         });
 
         if (response.ok || response.status === 204) {
@@ -127,9 +162,14 @@ window.atualizarStock = async function (id) {
 
     try {
         // Construct URL manually since API_URL points to /api/Plantas
+        // Construct URL manually since API_URL points to /api/Plantas
+        const token = sessionStorage.getItem("token");
+        const headers = { "Content-Type": "application/json" };
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
         const response = await fetch(`https://localhost:7010/api/Stocks/${id}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: headers,
             body: JSON.stringify({ quantidade: novoStock })
         });
 

@@ -3,6 +3,7 @@ using LauGardensApi.Data.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.Extensions.Caching.Distributed; // Para o Redis
 using System.Numerics;
@@ -25,6 +26,7 @@ namespace LauGardensApi.Controllers
 
         // GET: api/utilizadores
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<Utilizador>>> GetUtilizadores()
         {
             var utilizadores = await _context.Utilizadores.ToListAsync();
@@ -67,7 +69,10 @@ namespace LauGardensApi.Controllers
             {
                 NomeUtilizador = utilizadorDto.NomeUtilizador,
                 PasswordHash = utilizadorDto.PasswordHash,
-                Role = utilizadorDto.Role
+                // Se o utilizador no estiver autenticado (ex: registo pblico), fora o role "cliente"
+                Role = User.Identity?.IsAuthenticated == true && User.IsInRole("admin") 
+                       ? utilizadorDto.Role 
+                       : "cliente" 
             };
 
             _context.Utilizadores.Add(novoUtilizador);
@@ -101,6 +106,7 @@ namespace LauGardensApi.Controllers
 
         // DELETE: api/utilizador/id - faz sentido
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteUtilizador(int id)
         {
             var utilizador = await _context.Utilizadores.FindAsync(id);

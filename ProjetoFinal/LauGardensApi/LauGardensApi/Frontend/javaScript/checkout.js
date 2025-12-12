@@ -110,11 +110,18 @@ async function finalizarCompra(event) {
     const API_URL = "https://localhost:7010/api/Stocks/Checkout";
 
     try {
+        const token = sessionStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json"
+        };
+
+        if (token) {
+            headers["Authorization"] = `Bearer ${token}`;
+        }
+
         const response = await fetch(API_URL, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: headers,
             body: JSON.stringify(checkoutItems)
         });
 

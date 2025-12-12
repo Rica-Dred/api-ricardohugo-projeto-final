@@ -146,4 +146,20 @@ app.UseCors("PermitirTudo");
 app.MapControllers();
 
 
+// Cria a BD se no existir (Substitui Migrations)
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        context.Database.EnsureCreated();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Ocorreu um erro ao criar a Base de Dados.");
+    }
+}
+
 app.Run();

@@ -3,6 +3,9 @@ using LauGardensApi.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+
 namespace LauGardensApi.Controllers;
 
 [ApiController]
@@ -17,6 +20,7 @@ public class StocksController : ControllerBase
     }
 
     [HttpPost("Checkout")]
+    [Authorize(Roles = "cliente")]
     public async Task<IActionResult> Checkout([FromBody] List<CheckoutItemDto> items)
     {
         using var transaction = await _context.Database.BeginTransactionAsync();
@@ -54,6 +58,7 @@ public class StocksController : ControllerBase
         }
     }
     [HttpPut("{plantaId}")]
+    [Authorize(Roles = "admin,func")]
     public async Task<IActionResult> UpdateStock(int plantaId, [FromBody] StockUpdateDto stockDto)
     {
         var stock = await _context.Stocks.FirstOrDefaultAsync(s => s.PlantaId == plantaId);

@@ -30,9 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const data = await response.json();
 
-            // Guardar o token no localStorage
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("role", data.role);
+            // Guardar o token no sessionStorage
+            sessionStorage.setItem("token", data.token);
+            sessionStorage.setItem("role", data.role);
+            sessionStorage.setItem("username", data.username);
 
             alert("Login bem-sucedido!");
 

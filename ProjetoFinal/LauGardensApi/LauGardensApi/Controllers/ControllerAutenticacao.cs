@@ -75,7 +75,8 @@ namespace LauGardensApi.Controllers
             {
                 token = tokenString,
                 expiresInMinutes = expireMinutes,
-                role = user.Role
+                role = user.Role,
+                username = user.NomeUtilizador
             });
         }
     }
