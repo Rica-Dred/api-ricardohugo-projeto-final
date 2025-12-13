@@ -43,12 +43,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 sessionStorage.removeItem("role");
                 sessionStorage.removeItem("username");
                 alert("Sessão terminada.");
-                window.location.href = "../paginas/index.html"; // Redireciona para a home (ajustar caminho se necessário)
-
-                // Fallback para se estivermos na raiz e o caminho acima falhar
-                setTimeout(() => {
+                // Ajustar caminho de redirecionamento com base na localização atual
+                if (window.location.pathname.includes("/paginas/pag")) {
+                    // Estamos numa sub-pasta (ex: paginas/pagCactos/cactos.html) -> Subir um nível
+                    window.location.href = "../index.html";
+                } else {
+                    // Estamos na raiz de paginas (ex: login.html) -> Irmão
                     window.location.href = "index.html";
-                }, 500);
+                }
             }
         };
 
@@ -59,15 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Ajustar o link para ir para a página de login
         // Detetar se estamos numa subpasta (../login.html) ou na raiz (./login.html)
         const currentPath = window.location.pathname;
-        if (currentPath.includes("/paginas/") && !currentPath.endsWith("index.html")) {
-            authLinkContainer.href = "../../Frontend/paginas/login.html"; // Ajuste tentativa
-            // Mas os ficheiros já têm href no HTML. Vamos manter o href do HTML se for login, 
-            // mas o HTML original diz "Log Out" -> "login.html".
-            // O href original do HTML é "./login.html" (index) ou "../login.html" (subpaginas).
-            // Vamos confiar no href que já lá está no HTML, só mudamos o texto.
-        } else {
-            // Mantemos o href original que aponta para o login
-        }
+        // Vamos confiar no href que já lá está no HTML, só mudamos o texto.
+        // O código anterior que forçava o caminho estava a causar duplicados (Frontend/Frontend).
     }
     // 3. Gerir Visibilidade do Menu "Gerir Plantas"
     // Limpar localStorage antigo para evitar conflitos (opcional, mas recomendado já que mudámos para session)

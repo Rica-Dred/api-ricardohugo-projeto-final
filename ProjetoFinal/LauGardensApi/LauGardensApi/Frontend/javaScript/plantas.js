@@ -19,6 +19,8 @@ async function carregarPlantas() {
         return;
     }
 
+    const categoriasAlvo = categoriaAlvo.split(",").map(c => c.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase());
+
     try {
         const response = await fetch(API_URL);
         if (!response.ok) throw new Error("Erro ao carregar plantas da API");
@@ -26,7 +28,8 @@ async function carregarPlantas() {
         const todasPlantas = await response.json();
         const plantasFiltradas = todasPlantas.filter(p => {
             if (!p.categoria) return false;
-            return p.categoria.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() === categoriaAlvo.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            const catNormalizada = p.categoria.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            return categoriasAlvo.includes(catNormalizada);
         });
 
         container.innerHTML = "";
@@ -166,6 +169,17 @@ window.abrirModal = function (planta) {
 };
 
 function adicionarAoCarrinho(planta) {
+    if (!sessionStorage.getItem("token")) {
+        alert("Tem de fazer login para adicionar produtos ao carrinho.");
+        // Redirecionamento inteligente (igual ao mouseOver.js)
+        if (window.location.pathname.includes("/paginas/pag")) {
+            window.location.href = "../login.html";
+        } else {
+            window.location.href = "login.html";
+        }
+        return;
+    }
+
     let carrinho = JSON.parse(localStorage.getItem('lausGardenCart')) || [];
     const itemExistente = carrinho.find(item => item.id === planta.id);
 

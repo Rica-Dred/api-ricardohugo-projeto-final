@@ -6,15 +6,47 @@
       "name": "API LausGarden",
       "stubs": [
         {
-          "//":"1.Disponivel",
+          "//": "--- MOCK DE PAGAMENTOS ---",
           "predicates": [
-            { "equals": { "method": "GET", "path": "/inventario/1" } }
+            {
+              "equals": {
+                "method": "POST",
+                "path": "/payments"
+              }
+            }
           ],
           "responses": [
             {
               "is": {
                 "statusCode": 200,
-                "headers": { "Content-Type": "application/json" },
+                "headers": {
+                  "Content-Type": "application/json"
+                },
+                "body": {
+                  "status": "Aprovado",
+                  "transactionId": "TX-12345-MOCK"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "//": "1.Disponivel",
+          "predicates": [
+            {
+              "equals": {
+                "method": "GET",
+                "path": "/inventario/1"
+              }
+            }
+          ],
+          "responses": [
+            {
+              "is": {
+                "statusCode": 200,
+                "headers": {
+                  "Content-Type": "application/json"
+                },
                 "body": {
                   "stock": 15,
                   "status": "Disponivel"
@@ -24,15 +56,22 @@
           ]
         },
         {
-          "//":"2.Sem stock",
+          "//": "2.Sem stock",
           "predicates": [
-            { "equals": { "method": "GET", "path": "/inventario/2" } }
+            {
+              "equals": {
+                "method": "GET",
+                "path": "/inventario/2"
+              }
+            }
           ],
           "responses": [
             {
               "is": {
                 "statusCode": 200,
-                "headers": { "Content-Type": "application/json" },
+                "headers": {
+                  "Content-Type": "application/json"
+                },
                 "body": {
                   "stock": 0,
                   "status": "Fora de stock"
@@ -42,9 +81,14 @@
           ]
         },
         {
-          "//":"3.Produto não encontrado",
+          "//": "3.Produto não encontrado",
           "predicates": [
-            { "equals": { "method": "GET", "path": "/inventario/3" } }
+            {
+              "equals": {
+                "method": "GET",
+                "path": "/inventario/3"
+              }
+            }
           ],
           "responses": [
             {
@@ -56,9 +100,14 @@
           ]
         },
         {
-          "//":"4.Falha",
+          "//": "4.Falha",
           "predicates": [
-            { "equals": { "method": "GET", "path": "/inventario/4" } }
+            {
+              "equals": {
+                "method": "GET",
+                "path": "/inventario/4"
+              }
+            }
           ],
           "responses": [
             {
@@ -70,15 +119,22 @@
           ]
         },
         {
-          "//":"5.Valor de stock negativo",
+          "//": "5.Valor de stock negativo",
           "predicates": [
-            { "equals": { "method": "GET", "path": "/inventario/5" } }
+            {
+              "equals": {
+                "method": "GET",
+                "path": "/inventario/5"
+              }
+            }
           ],
           "responses": [
             {
               "is": {
                 "statusCode": 200,
-                "headers": { "Content-Type": "application/json" },
+                "headers": {
+                  "Content-Type": "application/json"
+                },
                 "body": {
                   "stock": -1,
                   "status": "Erro"
@@ -88,9 +144,14 @@
           ]
         },
         {
-          "//":"6.Falta de permissões",
+          "//": "6.Falta de permissões",
           "predicates": [
-            { "equals": { "method": "GET", "path": "/inventario/6" } }
+            {
+              "equals": {
+                "method": "GET",
+                "path": "/inventario/6"
+              }
+            }
           ],
           "responses": [
             {
@@ -102,15 +163,22 @@
           ]
         },
         {
-          "//":"7.Campo obrigatório em falta",
+          "//": "7.Campo obrigatório em falta",
           "predicates": [
-            { "equals": { "method": "GET", "path": "/inventario/7" } }
+            {
+              "equals": {
+                "method": "GET",
+                "path": "/inventario/7"
+              }
+            }
           ],
           "responses": [
             {
               "is": {
                 "statusCode": 200,
-                "headers": { "Content-Type": "application/json" },
+                "headers": {
+                  "Content-Type": "application/json"
+                },
                 "body": {
                   "status": "Disponivel"
                 }
@@ -119,15 +187,22 @@
           ]
         },
         {
-          "//":"8. Fallback para qualquer outro ID",
+          "//": "8. Fallback para qualquer outro ID",
           "predicates": [
-            { "matches": { "method": "GET", "path": "^/inventario/\\d+$" } }
+            {
+              "matches": {
+                "method": "GET",
+                "path": "^/inventario/\\d+$"
+              }
+            }
           ],
           "responses": [
             {
               "is": {
                 "statusCode": 200,
-                "headers": { "Content-Type": "application/json" },
+                "headers": {
+                  "Content-Type": "application/json"
+                },
                 "body": {
                   "stock": 25,
                   "status": "Disponivel"

@@ -1,6 +1,12 @@
 
 // Carregar o carrinho ao iniciar a página
 document.addEventListener("DOMContentLoaded", function () {
+    if (!sessionStorage.getItem("token")) {
+        alert("Tem de estar logado para aceder ao checkout.");
+        window.location.href = "login.html";
+        return;
+    }
+
     carregarCarrinho();
 
     // Associar evento ao formulário de checkout

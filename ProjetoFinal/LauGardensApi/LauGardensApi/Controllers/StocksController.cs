@@ -13,16 +13,38 @@ namespace LauGardensApi.Controllers;
 public class StocksController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IHttpClientFactory _clientFactory;
 
-    public StocksController(AppDbContext context)
+    public StocksController(AppDbContext context, IHttpClientFactory clientFactory)
     {
         _context = context;
+        _clientFactory = clientFactory;
     }
 
     [HttpPost("Checkout")]
     [Authorize(Roles = "cliente")]
     public async Task<IActionResult> Checkout([FromBody] List<CheckoutItemDto> items)
     {
+        // --- MOCK PAGAMENTO (IMPOSTER) ---
+        try
+        {
+            var client = _clientFactory.CreateClient("ImposterApi");
+            // Payload simples (podia vir do frontend, mas para demo usamos fixo/calculado)
+            var paymentData = new { cliente = "Cliente Checkout", valor = 100 }; 
+            
+            var response = await client.PostAsJsonAsync("/payments", paymentData);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return BadRequest("Pagamento Recusado pela entidade financeira (Simulação).");
+            }
+        }
+        catch (Exception ex)
+        {
+             return StatusCode(500, "Erro ao validar pagamento (Mock): " + ex.Message);
+        }
+        // --- FIM MOCK PAGAMENTO ---
+
         using var transaction = await _context.Database.BeginTransactionAsync();
 
         try

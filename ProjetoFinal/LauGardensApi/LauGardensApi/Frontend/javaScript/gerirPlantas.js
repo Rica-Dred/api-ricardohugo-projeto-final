@@ -41,11 +41,7 @@ async function carregarPlantas() {
         plantas.forEach(p => {
             const tr = document.createElement("tr");
 
-            // Safe URL handling
-            let imgUrl = p.urlImagem;
-            if (imgUrl && !imgUrl.startsWith("http") && !imgUrl.startsWith("/")) {
-                imgUrl = "../" + imgUrl; // Attempt relative adjustment if needed
-            }
+
 
             // Delete button is ONLY for Admin
             let deleteButtonHtml = "";
@@ -59,7 +55,7 @@ async function carregarPlantas() {
             }
 
             tr.innerHTML = `
-                <td><img src="${imgUrl}" alt="${p.nome}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;"></td>
+
                 <td class="fw-bold">${p.nome}</td>
                 <td><span class="badge bg-secondary">${p.categoria}</span></td>
                 <td>
@@ -95,7 +91,7 @@ function setupForm() {
             categoria: document.getElementById("categoria").value,
             preco: parseFloat(document.getElementById("preco").value),
             quantidadeInicial: parseInt(document.getElementById("quantidadeInicial").value),
-            urlImagem: document.getElementById("urlImagem").value,
+            urlImagem: "/img/placeholder.png", // Default fixo já que o input foi removido
             descricao: document.getElementById("descricao").value
         };
 
