@@ -2,7 +2,6 @@ using LauGardensApi.Data;
 using LauGardensApi.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 
@@ -38,8 +37,6 @@ public class ReservasController : ControllerBase
             return BadRequest("Planta inválida.");
         }
 
-        // --- MOCK PAGAMENTO (IMPOSTER) ---
-        // Aqui simulamos uma chamada a um serviço externo de pagamentos
         // Se o pagamento falhar, a reserva não é criada.
         try
         {
@@ -57,11 +54,9 @@ public class ReservasController : ControllerBase
         }
         catch (Exception ex)
         {
-            // Em caso de erro de comunicação com o Mock, decidimos se falha ou deixa passar.
-            // Para segurança, vamos bloquear.
+            // Em caso de erro de comunicação com o Mock, decidimos bloquear.
              return StatusCode(500, "Erro ao validar pagamento: " + ex.Message);
         }
-        // --- FIM MOCK PAGAMENTO ---
 
         _context.Reservas.Add(reserva);
         await _context.SaveChangesAsync();

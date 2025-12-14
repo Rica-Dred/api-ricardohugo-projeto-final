@@ -29,7 +29,7 @@ namespace LauGardensApi.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] PedidoAutenticacao request)
         {
-            // 1. Procurar o utilizador na BD
+            //Procura o utilizador na BD
             var user = await _context.Utilizadores
                 .FirstOrDefaultAsync(u => u.NomeUtilizador == request.NomeUtilizador);
 
@@ -38,14 +38,12 @@ namespace LauGardensApi.Controllers
                 return Unauthorized("Credenciais inválidas.");
             }
 
-            // ATENÇÃO: aqui estamos a assumir que PasswordHash guarda a password em texto simples
-            // Se tiveres hashing, depois mudamos isto.
             if (user.PasswordHash != request.Password)
             {
                 return Unauthorized("Credenciais inválidas.");
             }
 
-            // 2. Criar as claims do utilizador
+            //Cria as claims do utilizador
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.NomeUtilizador),
@@ -54,7 +52,7 @@ namespace LauGardensApi.Controllers
                 new Claim(ClaimTypes.Role, user.Role ?? "colaborador")
             };
 
-            // 3. Ler configurações do JWT
+            //Le configurações do JWT
             var jwtSection = _configuration.GetSection("Jwt");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

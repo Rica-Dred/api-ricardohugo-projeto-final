@@ -5,12 +5,10 @@ using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Polly;
-using Polly.Caching; // Aqui vive o IAsyncCacheProvider e o Ttl
+using Polly.Caching;
 
 namespace LauGardensApi
 {
-    // CORREÇÃO: Usamos IAsyncCacheProvider porque o Redis é Async
-    // Removemos o <T> para simplificar a injeção de dependência
     public class PollyRedisAdapt : IAsyncCacheProvider
     {
         private readonly IDistributedCache _cache;
@@ -32,9 +30,9 @@ namespace LauGardensApi
                 {
                     var options = new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.IgnoreCycles };
                     // Deserializamos para 'object' genérico
-                    var result = JsonSerializer.Deserialize<object>(value, options);
+                    var resultado = JsonSerializer.Deserialize<object>(value, options);
 
-                    return (true, result);
+                    return (true, resultado);
                 }
                 catch (Exception)
                 {

@@ -7,7 +7,6 @@ using Polly;
 using Polly.Caching;
 using System.Text.Json;
 using System.Text.Json.Serialization; //deserializar/serializar dados 
-
 using System.Text.Json.Serialization; //deserializar/serializar dados 
 using Microsoft.AspNetCore.Authorization;
 

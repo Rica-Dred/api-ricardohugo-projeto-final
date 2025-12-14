@@ -27,7 +27,6 @@ namespace LauGardensApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Funcionario>>> GetFuncionarios()
         {
-            // Se quiseres incluir o Utilizador e Stocks, podes usar Include/ThenInclude
             var funcionarios = await _context.Funcionarios
                 .Include(f => f.Utilizador)
                 .Include(f => f.Stocks)
@@ -45,7 +44,7 @@ namespace LauGardensApi.Controllers
             {
                 try
                 {
-                    // Como tens Includes (Utilizador, Stocks), precisamos de opções para ignorar ciclos
+                    //Como temos Includes (Utilizador, Stocks), precisamos de opções para ignorar ciclos
                     var jsonOptions = new JsonSerializerOptions
                     {
                         ReferenceHandler = ReferenceHandler.IgnoreCycles,
@@ -86,8 +85,6 @@ namespace LauGardensApi.Controllers
             _context.Funcionarios.Add(novoFuncionario);
             await _context.SaveChangesAsync();
 
-            // Podes devolver CreatedAtAction se quiseres seguir mais à risca o REST
-            // return CreatedAtAction(nameof(GetFuncionario), new { id = novoFuncionario.Id }, novoFuncionario);
             return Ok(novoFuncionario);
         }
 

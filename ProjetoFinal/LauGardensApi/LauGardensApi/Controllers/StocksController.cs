@@ -25,7 +25,6 @@ public class StocksController : ControllerBase
     [Authorize(Roles = "cliente")]
     public async Task<IActionResult> Checkout([FromBody] List<CheckoutItemDto> items)
     {
-        // --- MOCK PAGAMENTO (IMPOSTER) ---
         try
         {
             var client = _clientFactory.CreateClient("ImposterApi");
@@ -43,7 +42,6 @@ public class StocksController : ControllerBase
         {
              return StatusCode(500, "Erro ao validar pagamento (Mock): " + ex.Message);
         }
-        // --- FIM MOCK PAGAMENTO ---
 
         using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -67,7 +65,7 @@ public class StocksController : ControllerBase
                 stock.Quantidade -= item.Quantidade;
                 stock.UltimaAtualizacao = DateTime.Now;
 
-                // CRIAR RESERVA AUTOMÁTICA
+                //Cria Reserva
                 var reserva = new Reserva
                 {
                     PlantaId = item.PlantaId,

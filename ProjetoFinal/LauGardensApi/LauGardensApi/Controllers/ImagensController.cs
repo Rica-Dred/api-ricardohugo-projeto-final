@@ -27,35 +27,32 @@ namespace LauGardensApi.Controllers
                 return BadRequest("Nenhum ficheiro foi enviado.");
             }
 
-            // A. Obter o Caminho Físico da Raiz Pública (Frontend)
-            // C:\...\LauGardens\Frontend
+            //Obte o Caminho Físico da Raiz Pública (Frontend) C:\...\LauGardens\Frontend
             var webRootPath = _webHostEnvironment.WebRootPath;
 
-            // B. Definir o Caminho para a subpasta 'img'
-            // C:\...\LauGardens\Frontend\img
+            //Define o Caminho para a subpasta 'img' C:\...\LauGardens\Frontend\img
             var pastaDestino = Path.Combine(webRootPath, "img");
 
-            // Garantir que a pasta 'img' existe
+            //Garante que a pasta 'img' existe
             if (!Directory.Exists(pastaDestino))
             {
                 Directory.CreateDirectory(pastaDestino);
             }
 
-            // C. Criar um nome de ficheiro único para evitar colisões
+            //Cria um nome de ficheiro único para evitar problemas de sobrescrição
             var extensao = Path.GetExtension(ficheiro.FileName);
             var nomeFicheiroUnico = Guid.NewGuid().ToString() + extensao;
             
-            // D. Caminho físico completo onde o ficheiro será gravado
+            //Caminho físico completo onde o ficheiro será gravado
             var caminhoGravarCompleto = Path.Combine(pastaDestino, nomeFicheiroUnico);
 
-            // E. Gravar o ficheiro
+            //Grava o ficheiro
             using (var stream = new FileStream(caminhoGravarCompleto, FileMode.Create))
             {
                 await ficheiro.CopyToAsync(stream);
             }
 
-            // F. Devolver o caminho URL público para a base de dados
-            // Ex: /img/1234abcd.png
+            //Devolve o caminho URL público para a base de dados Ex: /img/1234abcd.png
             var urlPublica = Path.Combine("/img", nomeFicheiroUnico).Replace('\\', '/');
 
             return Ok(new { UrlImagem = urlPublica });

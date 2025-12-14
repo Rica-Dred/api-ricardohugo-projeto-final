@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-
 using Microsoft.Extensions.Caching.Distributed; // Para o Redis
 using System.Numerics;
 using System.Text.Json; //deserializar/serializar dados 
