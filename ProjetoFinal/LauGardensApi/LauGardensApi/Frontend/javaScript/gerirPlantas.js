@@ -86,12 +86,38 @@ function setupForm() {
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
+        // 1. Upload da Imagem (se existir)
+        const fileInput = document.getElementById("imagem");
+        let urlImagemFinal = "/img/placeholder.png"; // Default
+
+        if (fileInput.files.length > 0) {
+            const formData = new FormData();
+            formData.append("ficheiro", fileInput.files[0]);
+
+            try {
+                const uploadResponse = await fetch("https://localhost:7010/api/Imagens/upload", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (uploadResponse.ok) {
+                    const data = await uploadResponse.json();
+                    urlImagemFinal = data.urlImagem;
+                } else {
+                    alert("Erro ao carregar imagem. A usar placeholder.");
+                }
+            } catch (err) {
+                console.error("Erro upload:", err);
+                alert("Erro ao carregar imagem (Exceção). A usar placeholder.");
+            }
+        }
+
         const novaPlanta = {
             nome: document.getElementById("nome").value,
             categoria: document.getElementById("categoria").value,
             preco: parseFloat(document.getElementById("preco").value),
             quantidadeInicial: parseInt(document.getElementById("quantidadeInicial").value),
-            urlImagem: "/img/placeholder.png", // Default fixo já que o input foi removido
+            urlImagem: urlImagemFinal,
             descricao: document.getElementById("descricao").value
         };
 

@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Login bem-sucedido!");
 
             // Redireciona para página principal
-            window.location.href = "../paginas/index.html";
+            window.location.href = "../index.html";
 
         } catch (error) {
             console.error("Erro no login:", error);

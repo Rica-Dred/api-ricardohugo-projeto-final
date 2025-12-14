@@ -65,6 +65,7 @@ public class ReservasController : ControllerBase
 
         _context.Reservas.Add(reserva);
         await _context.SaveChangesAsync();
+        // Persistência reativada.
 
         return CreatedAtAction(nameof(GetReserva), new { id = reserva.Id }, reserva);
     }

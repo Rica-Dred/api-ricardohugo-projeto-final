@@ -3,7 +3,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     if (!sessionStorage.getItem("token")) {
         alert("Tem de estar logado para aceder ao checkout.");
-        window.location.href = "login.html";
+        window.location.href = "../pagLogin/login.html";
         return;
     }
 
@@ -134,7 +134,7 @@ async function finalizarCompra(event) {
         if (response.ok) {
             alert("Pagamento realizado com sucesso, as suas plantas estarão à sua espera!");
             localStorage.removeItem('lausGardenCart');
-            window.location.href = "index.html";
+            window.location.href = "../index.html";
         } else {
             const errorMsg = await response.text();
             alert("Erro ao finalizar compra: " + errorMsg);

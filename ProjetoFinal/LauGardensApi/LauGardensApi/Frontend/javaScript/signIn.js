@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (response.ok) {
                     alert("Conta criada com sucesso! Por favor faça login.");
-                    window.location.href = "login.html";
+                    window.location.href = "../pagLogin/login.html";
                 } else {
                     const errorMsg = await response.text();
                     alert("Erro ao criar conta: " + errorMsg);

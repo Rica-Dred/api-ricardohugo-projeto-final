@@ -66,12 +66,23 @@ public class StocksController : ControllerBase
 
                 stock.Quantidade -= item.Quantidade;
                 stock.UltimaAtualizacao = DateTime.Now;
+
+                // CRIAR RESERVA AUTOMÁTICA
+                var reserva = new Reserva
+                {
+                    PlantaId = item.PlantaId,
+                    NomeCliente = User.Identity?.Name ?? "Cliente Web",
+                    Contacto = "Checkout Online",
+                    DataReserva = DateTime.UtcNow,
+                    Status = "Pago" // Define o status como pago, já que vem do checkout
+                };
+                _context.Reservas.Add(reserva);
             }
 
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
 
-            return Ok(new { message = "Compra realizada e stock atualizado com sucesso." });
+            return Ok(new { message = "Compra realizada, stock atualizado e reservas criadas." });
         }
         catch (Exception ex)
         {

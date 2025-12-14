@@ -30,10 +30,10 @@ builder.Services
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-        options.JsonSerializerOptions.WriteIndented = true; // opcional, s� para o JSON ficar bonito
+        options.JsonSerializerOptions.WriteIndented = true; // opcional, para o JSON ficar bonito
     });
 
-// Usa a tua classe AppDbContext (do ficheiro que mostraste)
+//AppDbContext - config BD
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection")
@@ -47,7 +47,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 //Redis
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    // Tenta ler do appsettings.json, se n�o conseguir, usa localhost:6379 (Docker)
+    // Tenta ler do appsettings.json, se nao conseguir, usa localhost:6379 (Docker)
     options.Configuration = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
     options.InstanceName = "LauGardens_"; // Prefixo para n�o misturar chaves
 });
@@ -55,18 +55,18 @@ builder.Services.AddStackExchangeRedisCache(options =>
 //Polly
 builder.Services.AddSingleton<IAsyncCacheProvider, PollyRedisAdapt>();
 
-//Configura��o do POLLY 
-// Define o que fazer quando falha: Tenta 3 vezes 
+//Config. Polly 
+//Tenta 3 vezes caso haja falha
 var retryPolicy = HttpPolicyExtensions
     .HandleTransientHttpError()
     .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
 
-// Define o disjuntor (Circuit Breaker): Se falhar 5 vezes, p�ra por 30 segundos
+//Se falhar 5 vezes, para por 30 segundos
 var circuitBreakerPolicy = HttpPolicyExtensions
     .HandleTransientHttpError()
     .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
 
-// Regista o Cliente HTTP que vai falar com o Imposter (Mountebank)
+//Regista o Cliente HTTP que vai falar com o Imposter 
 builder.Services.AddHttpClient("ImposterApi", client =>
 {
     client.BaseAddress = new Uri("http://localhost:4545"); // Porta definida no Docker
@@ -75,7 +75,7 @@ builder.Services.AddHttpClient("ImposterApi", client =>
 .AddPolicyHandler(circuitBreakerPolicy);
 
 
-// JWT
+//JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var secretKey = jwtSettings["Key"];
 
@@ -137,8 +137,8 @@ app.UseStaticFiles( new StaticFileOptions
 }
 ); 
 
-app.UseAuthentication(); //Autentica��o JWT
-app.UseAuthorization(); //Autoriza��o JWT 
+app.UseAuthentication(); //Autenticacao JWT
+app.UseAuthorization(); //Autorizacao JWT 
 
 // CORS - Ativar Politica criada acima
 app.UseCors("PermitirTudo");

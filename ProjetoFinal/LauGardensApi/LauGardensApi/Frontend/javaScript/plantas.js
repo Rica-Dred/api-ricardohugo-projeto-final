@@ -104,7 +104,7 @@ function criarModalGenerico(id) {
             
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <span id="modalPreco" class="fw-bold fs-5"></span>
-                <span id="modalStock" class="badge bg-secondary"></span>
+                <span id="modalStock" class="fw-bold fs-6 text-muted"></span>
             </div>
 
             <hr>
