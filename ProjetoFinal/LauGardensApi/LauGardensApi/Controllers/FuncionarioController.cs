@@ -44,7 +44,7 @@ namespace LauGardensApi.Controllers
             {
                 try
                 {
-                    //Como temos Includes (Utilizador, Stocks), precisamos de opções para ignorar ciclos
+                    //temos includes, precisamos de opções para ignorar ciclos
                     var jsonOptions = new JsonSerializerOptions
                     {
                         ReferenceHandler = ReferenceHandler.IgnoreCycles,

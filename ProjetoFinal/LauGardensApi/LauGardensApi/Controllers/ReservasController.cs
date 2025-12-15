@@ -70,47 +70,38 @@ public class ReservasController : ControllerBase
         return CreatedAtAction(nameof(GetReserva), new { id = reserva.Id }, reserva);
     }
 
-    // Certifique-se de que o ReservasController injeta o IAsyncCacheProvider
-    // O método GetReserva irá recebê-lo via [FromServices]
-
     [HttpGet("{id}")]
     public async Task<ActionResult<Reserva>> GetReserva(int id, [FromServices] IAsyncCacheProvider cacheProvider)
     {
-        // 1. Política de cache: Usa o adaptador para falar com o Redis, TTL de 10 minutos
+        //Política de cache
         var cachePolicy = Policy.CacheAsync<object>(cacheProvider, TimeSpan.FromMinutes(10));
 
         try
         {
-            // 3. EXECUÇÃO PROTEGIDA: Tenta obter do cache primeiro.
             var resulFinal = await cachePolicy.ExecuteAsync(async (context) =>
             {
-                // ESTE CÓDIGO SÓ É EXECUTADO SE O CACHE FALHAR (Cache Miss)
-
-                // BD: Acede à Base de Dados para obter a Reserva
+                //Executado caso cache falhe
+                //Acede bd
                 var reserva = await _context.Reservas.FindAsync(id);
 
-                // Verifica se encontrou (necessário porque o Polly não guarda null por defeito,
-                // mas o adaptador PollyRedisAdapt está configurado para lidar com null)
+                // Verifica se encontrou 
                 if (reserva == null) return null;
 
-                // Retorna o objeto para que o Polly guarde no Redis
+                //Retorna o objeto para que o Polly guarde no Redis
                 return (object)reserva;
 
-            }, new Context($"reserva_{id}")); // Passa a chave dinâmica para a política
+            }, new Context($"reserva_{id}")); // Passa a chave dinâmica
 
             if (resulFinal == null)
             {
-                // Se o cache hit ou a BD retornaram null (reserva não existe)
                 return NotFound();
             }
 
-            // 4. Retorna o resultado obtido (do Cache ou da BD)
-            // O Ok() vai desserializar o 'resulFinal' (que é do tipo Reserva)
+            //Retorna o resultado obtido (do Cache ou da BD)
             return Ok(resulFinal);
         }
         catch (Exception)
         {
-            // Tratamento de erros (consistente com os outros Controllers)
             return StatusCode(500, $"Erro ao carregar a reserva.");
         }
     }

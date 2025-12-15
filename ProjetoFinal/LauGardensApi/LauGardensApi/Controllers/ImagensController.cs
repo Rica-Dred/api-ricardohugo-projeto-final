@@ -27,10 +27,10 @@ namespace LauGardensApi.Controllers
                 return BadRequest("Nenhum ficheiro foi enviado.");
             }
 
-            //Obte o Caminho Físico da Raiz Pública (Frontend) C:\...\LauGardens\Frontend
+            //Caminho Físico da Raiz C:\...\LauGardens\Frontend
             var webRootPath = _webHostEnvironment.WebRootPath;
 
-            //Define o Caminho para a subpasta 'img' C:\...\LauGardens\Frontend\img
+            //Caminho para a pasta 'img' 
             var pastaDestino = Path.Combine(webRootPath, "img");
 
             //Garante que a pasta 'img' existe
@@ -39,7 +39,7 @@ namespace LauGardensApi.Controllers
                 Directory.CreateDirectory(pastaDestino);
             }
 
-            //Cria um nome de ficheiro único para evitar problemas de sobrescrição
+            //Cria nome de ficheiro único para evitar problemas
             var extensao = Path.GetExtension(ficheiro.FileName);
             var nomeFicheiroUnico = Guid.NewGuid().ToString() + extensao;
             

@@ -39,15 +39,14 @@ public class PlantasController : ControllerBase
                 var plantas = await _context.Plantas.Include(p => p.Stock).ToListAsync();
                 return (object)plantas;
 
-            }, new Context("lista_plantas_completa")); // Passa a chave do cache para a política usar
+            }, new Context("lista_plantas_completa")); //Passa a chave do cache para a política usar
 
             if (resulFinal == null) return NotFound();
             return Ok(resulFinal);
         }
         catch (Exception)
         {
-            // Tratamento de erros (ex: Redis inacessível, mas a BD funcionou)
-            // Se a BD falhar, isto apanha.
+            // Tratamento de erro, se a BD falhar, isto apanha.
             return StatusCode(500, $"Erro ao carregar plantas.");
         }
     }
@@ -56,7 +55,7 @@ public class PlantasController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<object>>GetPlanta(int id, [FromServices] IAsyncCacheProvider cacheProvider)
     {
-        //politica de cache, Polly vai usar 'cacheProvider' para verificar o Redis automaticamente
+        //politica de cache, Polly vai usar 'cacheProvider' para verificar o Redis
         var cachePolicy = Policy.CacheAsync<object>(cacheProvider, TimeSpan.FromMinutes(10));
 
         try
@@ -68,7 +67,7 @@ public class PlantasController : ControllerBase
                 var planta = await _context.Plantas.FindAsync(id);
                 if (planta == null) return null;
 
-                //Polly Resiliência (Imposter)
+                //Polly Resiliência
                 var clientPolly = _clientFactory.CreateClient("ImposterApi");
                 object stockInfo = "Indisponivel";
 

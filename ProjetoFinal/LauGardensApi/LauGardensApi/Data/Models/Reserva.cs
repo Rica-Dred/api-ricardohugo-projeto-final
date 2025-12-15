@@ -10,8 +10,4 @@ public class Reserva
     public int PlantaId { get; set; }
     public DateTime DataReserva { get; set; } = DateTime.UtcNow;
     public string Status { get; set; } = "Pendente";
-
-    // Navegação opcional, se quiseres incluir os dados da planta na resposta
-    [JsonIgnore]
-    public Planta? Planta { get; set; }
 }

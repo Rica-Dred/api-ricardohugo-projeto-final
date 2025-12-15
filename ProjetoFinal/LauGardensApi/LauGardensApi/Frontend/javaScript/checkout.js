@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = "../pagLogin/login.html";
         return;
     }
-
     carregarCarrinho();
 
     // Associar evento ao formulário de checkout

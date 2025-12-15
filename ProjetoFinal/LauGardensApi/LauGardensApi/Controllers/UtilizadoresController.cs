@@ -28,32 +28,29 @@ namespace LauGardensApi.Controllers
         [HttpGet][Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<Utilizador>>> GetUtilizadores([FromServices] IAsyncCacheProvider cacheProvider)
         {
-            // Define a política de cache com TTL de 10 minutos
+            //política de cache com TTL de 10 
             var cachePolicy = Policy.CacheAsync<object>(cacheProvider, TimeSpan.FromMinutes(10));
 
             try
             {
-                // EXECUÇÃO PROTEGIDA: Tenta obter do cache (Redis) primeiro.
+                //tenta obter do cache (Redis) primeiro.
                 var resulFinal = await cachePolicy.ExecuteAsync(async (context) =>
                 {
-                    // ESTE CÓDIGO SÓ É EXECUTADO SE O CACHE FALHAR
-
-                    // BD: Acede à Base de Dados para obter a lista de Utilizadores
+                    //acede à bd
                     var utilizadores = await _context.Utilizadores.ToListAsync();
 
-                    // Retorna o objeto para que o Polly guarde no Redis
+                    //retorna o objeto para que o Polly guarde no Redis
                     return (object)utilizadores;
 
                 }, new Context("lista_utilizadores_completa")); // Passa a chave do cache para a política
 
                 if (resulFinal == null) return NotFound();
 
-                // Retorna o resultado obtido (do Cache ou da BD)
+                // Retorna o resultado obtido
                 return Ok(resulFinal);
             }
             catch (Exception)
             {
-                // Se houver uma falha no Redis ou na BD, retorna 500.
                 return StatusCode(500, $"Erro ao carregar a lista de utilizadores.");
             }
         }
@@ -93,7 +90,7 @@ namespace LauGardensApi.Controllers
             {
                 NomeUtilizador = utilizadorDto.NomeUtilizador,
                 PasswordHash = utilizadorDto.PasswordHash,
-                // Se o utilizador no estiver autenticado (ex: registo pblico), fora o role "cliente"
+                // Se o utilizador no estiver autenticado, fora o role "cliente"
                 Role = User.Identity?.IsAuthenticated == true && User.IsInRole("admin") 
                        ? utilizadorDto.Role 
                        : "cliente" 

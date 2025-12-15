@@ -28,19 +28,19 @@ public class StocksController : ControllerBase
         try
         {
             var client = _clientFactory.CreateClient("ImposterApi");
-            // Payload simples (podia vir do frontend, mas para demo usamos fixo/calculado)
+            //Simulacao simples 
             var paymentData = new { cliente = "Cliente Checkout", valor = 100 }; 
             
             var response = await client.PostAsJsonAsync("/payments", paymentData);
 
             if (!response.IsSuccessStatusCode)
             {
-                return BadRequest("Pagamento Recusado pela entidade financeira (Simulação).");
+                return BadRequest("Pagamento Recusado.");
             }
         }
         catch (Exception ex)
         {
-             return StatusCode(500, "Erro ao validar pagamento (Mock): " + ex.Message);
+             return StatusCode(500, "Erro ao validar pagamento." + ex.Message);
         }
 
         using var transaction = await _context.Database.BeginTransactionAsync();
@@ -72,7 +72,7 @@ public class StocksController : ControllerBase
                     NomeCliente = User.Identity?.Name ?? "Cliente Web",
                     Contacto = "Checkout Online",
                     DataReserva = DateTime.UtcNow,
-                    Status = "Pago" // Define o status como pago, já que vem do checkout
+                    Status = "Pago" // Define o status como pago, pq já que vem do checkout
                 };
                 _context.Reservas.Add(reserva);
             }
@@ -82,10 +82,10 @@ public class StocksController : ControllerBase
 
             return Ok(new { message = "Compra realizada, stock atualizado e reservas criadas." });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             await transaction.RollbackAsync();
-            return StatusCode(500, $"Erro ao processar checkout: {ex.Message}");
+            return StatusCode(500, $"Erro ao processar checkout.");
         }
     }
     [HttpPut("{plantaId}")]
@@ -107,9 +107,9 @@ public class StocksController : ControllerBase
             await _context.SaveChangesAsync();
             return Ok(new { message = "Stock atualizado com sucesso.", novoStock = stock.Quantidade });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return StatusCode(500, $"Erro ao atualizar stock: {ex.Message}");
+            return StatusCode(500, $"Erro ao atualizar stock.");
         }
     }
 }
