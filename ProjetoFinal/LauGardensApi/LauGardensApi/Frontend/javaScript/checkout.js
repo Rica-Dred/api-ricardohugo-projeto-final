@@ -1,4 +1,3 @@
-
 // Carregar o carrinho ao iniciar a página
 document.addEventListener("DOMContentLoaded", function () {
     if (!sessionStorage.getItem("token")) {
@@ -16,6 +15,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+//Metodos de pagamento
+document.addEventListener("DOMContentLoaded", () => {
+    const metodoPagamento = document.getElementById("metodoPagamento");
+    const mbwayDetails = document.getElementById("mbway");
+    const transferDetails = document.getElementById("transferencia");
+
+    metodoPagamento.addEventListener("change", () => {
+        //Esconde ambos
+        mbwayDetails.style.display = "none";
+        transferDetails.style.display = "none";
+
+        //Mostrar conforme a opção
+        if (metodoPagamento.value === "mbway") {
+            mbwayDetails.style.display = "block";
+        } else if (metodoPagamento.value === "transferencia") {
+            transferDetails.style.display = "block";
+        }
+    });
+});
+
 function carregarCarrinho() {
     const carrinho = JSON.parse(localStorage.getItem('lausGardenCart')) || [];
     const container = document.getElementById("itensCarrinho");
@@ -25,7 +44,7 @@ function carregarCarrinho() {
 
     let total = 0;
 
-    // Limpar lista de resumo (vamos reconstruir)
+    // Limpa lista de resumo
     if (resumoLista) resumoLista.innerHTML = "";
 
     if (carrinho.length === 0) {
@@ -39,7 +58,7 @@ function carregarCarrinho() {
         const subtotal = item.preco * item.quantidade;
         total += subtotal;
 
-        // Adicionar item ao resumo da compra
+        //Adiciona item ao resumo da compra
         if (resumoLista) {
             const li = document.createElement("li");
             li.className = "list-group-item d-flex justify-content-between lh-sm align-items-center";
@@ -63,7 +82,7 @@ function carregarCarrinho() {
         }
     });
 
-    // Adicionar Linha de Total
+    //Add Linha de Total
     if (resumoLista) {
         const liTotal = document.createElement("li");
         liTotal.className = "list-group-item d-flex justify-content-between";
@@ -132,7 +151,7 @@ async function finalizarCompra(event) {
         });
 
         if (response.ok) {
-            alert("Pagamento realizado com sucesso, as suas plantas estarão à sua espera!");
+            alert("Pagamento realizado com sucesso, as suas plantas serão reservadas.");
             localStorage.removeItem('lausGardenCart');
             window.location.href = "../index.html";
         } else {

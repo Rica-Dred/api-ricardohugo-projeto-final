@@ -55,37 +55,37 @@
                             <h5 class="mb-3">Dados Pessoais</h5>
                             <input type="text" class="form-control mb-3" placeholder="Nome" required>
 
-                            <!-- NIF Validation: 9 digits -->
+                            <!--Validacao NIF -->
                             <input type="text" class="form-control mb-3" placeholder="NIF" required pattern="[0-9]{9}"
                                 minlength="9" maxlength="9" title="O NIF deve ter 9 dígitos numéricos">
 
-                            <!-- Phone Validation: 9 digits -->
+                            <!-- Validacao Telemovel -->
                             <input type="text" class="form-control mb-3" placeholder="Telemóvel" required
                                 pattern="[0-9]{9}" minlength="9" maxlength="9"
-                                title="O telemóvel deve ter 9 dígitos numéricos">
+                                title="O número de telemóvel deve conter 9 dígitos numéricos">
 
                             <h5 class="mt-4 mb-3">Método de Pagamento</h5>
-                            <select class="form-select mb-3" id="paymentMethod" required
+                            <select class="form-select mb-3" id="metodoPagamento" required
                                 onchange="togglePaymentDetails()">
                                 <option value="" disabled selected>Selecione o método de pagamento</option>
                                 <option value="mbway">MB Way</option>
-                                <option value="transferencia">Transferência</option>
+                                <option value="transferenciaBanc">Transferência Bancária</option>
                             </select>
 
                             <!-- Detalhes MB Way -->
-                            <div id="mbway-details" class="mb-3" style="display: none;">
-                                <label for="mbwayPhone" class="form-label">Telemóvel MB Way</label>
-                                <input type="text" class="form-control" id="mbwayPhone" placeholder="9xxxxxxxx"
+                            <div id="mbway" class="mb-3" style="display: none;">
+                                <label for="NumMbway" class="form-label">Telemóvel MB Way</label>
+                                <input type="text" class="form-control" id="NumMbway" placeholder="9xxxxxxxx"
                                     pattern="^9[0-9]{8}$" minlength="9" maxlength="9"
                                     title="Deve começar por 9 e ter 9 dígitos.">
                             </div>
 
                             <!-- Detalhes Transferência -->
-                            <div id="transfer-details" class="mb-3" style="display: none;">
-                                <label for="nib" class="form-label">NIB da Conta</label>
-                                <input type="text" class="form-control" id="nib" placeholder="21 dígitos"
+                            <div id="transferencia" class="mb-3" style="display: none;">
+                                <label for="iban" class="form-label">NIB da Conta</label>
+                                <input type="text" class="form-control" id="iban" placeholder="21 dígitos"
                                     pattern="[0-9]{21}" minlength="21" maxlength="21"
-                                    title="O NIB deve ter exatamente 21 dígitos.">
+                                    title="O IBban deve ter exatamente 21 dígitos.">
                             </div>
 
                             <h5 class="mt-4 mb-3">Resumo da Compra</h5>
