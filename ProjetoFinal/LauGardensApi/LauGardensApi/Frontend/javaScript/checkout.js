@@ -18,19 +18,19 @@ document.addEventListener("DOMContentLoaded", function () {
 //Metodos de pagamento
 document.addEventListener("DOMContentLoaded", () => {
     const metodoPagamento = document.getElementById("metodoPagamento");
-    const mbwayDetails = document.getElementById("mbway");
-    const transferDetails = document.getElementById("transferencia");
+    const mbwayDetalhes = document.getElementById("mbway");
+    const transferenciaDetalhes = document.getElementById("transferenciaBancaria");
 
     metodoPagamento.addEventListener("change", () => {
         //Esconde ambos
-        mbwayDetails.style.display = "none";
-        transferDetails.style.display = "none";
+        mbwayDetalhes.style.display = "none";
+        transferenciaDetalhes.style.display = "none";
 
         //Mostrar conforme a opção
         if (metodoPagamento.value === "mbway") {
-            mbwayDetails.style.display = "block";
+            mbwayDetalhes.style.display = "block";
         } else if (metodoPagamento.value === "transferencia") {
-            transferDetails.style.display = "block";
+            transferenciaDetalhes.style.display = "block";
         }
     });
 });

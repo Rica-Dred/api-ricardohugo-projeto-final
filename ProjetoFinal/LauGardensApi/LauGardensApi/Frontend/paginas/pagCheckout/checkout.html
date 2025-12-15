@@ -69,28 +69,25 @@
                                 onchange="togglePaymentDetails()">
                                 <option value="" disabled selected>Selecione o método de pagamento</option>
                                 <option value="mbway">MB Way</option>
-                                <option value="transferenciaBanc">Transferência Bancária</option>
+                                <option value="transferencia">Transferência Bancária</option>
                             </select>
 
                             <!-- Detalhes MB Way -->
                             <div id="mbway" class="mb-3" style="display: none;">
-                                <label for="NumMbway" class="form-label">Telemóvel MB Way</label>
-                                <input type="text" class="form-control" id="NumMbway" placeholder="9xxxxxxxx"
-                                    pattern="^9[0-9]{8}$" minlength="9" maxlength="9"
-                                    title="Deve começar por 9 e ter 9 dígitos.">
+                                <label for="NumMbway" class="form-label">MB Way</label>
+                                <input type="text" class="form-control" id="NumMbway" pattern="^9[0-9]{8}$"
+                                    minlength="9" maxlength="9" title="Deve começar por 9 e ter 9 dígitos.">
                             </div>
 
                             <!-- Detalhes Transferência -->
-                            <div id="transferencia" class="mb-3" style="display: none;">
-                                <label for="iban" class="form-label">NIB da Conta</label>
-                                <input type="text" class="form-control" id="iban" placeholder="21 dígitos"
-                                    pattern="[0-9]{21}" minlength="21" maxlength="21"
-                                    title="O IBban deve ter exatamente 21 dígitos.">
+                            <div id="transferenciaBancaria" class="mb-3" style="display: none;">
+                                <label for="iban" class="form-label">IBAN</label>
+                                <input type="text" class="form-control" id="iban" pattern="[0-9]{21}" minlength="21"
+                                    maxlength="21" title="O IBAN deve conter 21 dígitos.">
                             </div>
 
                             <h5 class="mt-4 mb-3">Resumo da Compra</h5>
                             <ul class="list-group mb-3">
-                                <!-- Items will be loaded by checkout.js -->
                             </ul>
 
                             <div class="text-center">
