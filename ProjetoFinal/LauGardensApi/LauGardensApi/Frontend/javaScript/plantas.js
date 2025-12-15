@@ -78,13 +78,8 @@ async function carregarPlantas() {
 function processarImagemUrl(url) {
     if (!url) return "";
 
-    // Se o URL vier da BD como "/img/...", e nós estivermos em "paginas/categoria/ficheiro.html",
-    // precisamos de subir 2 níveis (../../) para chegar à raiz do "Frontend" onde está a pasta "img".
-    if (url.startsWith("/img/")) {
+    if (url.startsWith("/img/") || url.startsWith("img/")) {
         return "../.." + url;
-    } else if (!url.startsWith("/")) {
-        // Se vier sem barra inicial, assume-se que precisa de subir na mesma
-        return "../../" + url;
     }
     return url;
 }
@@ -125,7 +120,7 @@ function criarModalGenerico(id) {
 
 
 
-// Global function called by onclick
+//Funcoes globais de onClick 
 window.abrirModal = function (planta) {
     const modalEl = document.getElementById("modalPlantaGenerico");
     const modalTitulo = document.getElementById("modalTitulo");
@@ -140,7 +135,7 @@ window.abrirModal = function (planta) {
     modalImagem.src = processarImagemUrl(planta.urlImagem);
     modalImagem.alt = planta.nome;
 
-    // Fallback if no detailed description
+    // Fallback caso não haja descrição
     modalDescricao.innerText = planta.descricao || "Sem descrição disponível.";
 
     if (planta.preco) {
@@ -157,9 +152,9 @@ window.abrirModal = function (planta) {
         btnCarrinho.disabled = true;
     }
 
-    carrinhoMensagem.innerHTML = ""; // Clear previous messages
+    carrinhoMensagem.innerHTML = ""; // Limpa mensagem anterior
 
-    // Update Button Click Logic
+    //Acao do btnCarrinho
     btnCarrinho.onclick = function () {
         adicionarAoCarrinho(planta);
     };

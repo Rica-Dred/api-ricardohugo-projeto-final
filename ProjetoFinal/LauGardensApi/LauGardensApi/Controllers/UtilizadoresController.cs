@@ -79,7 +79,7 @@ namespace LauGardensApi.Controllers
             return Ok(novoUtilizador);
         }
 
-        // PUT: api/utilizador/ID - faz sentido
+        // PUT: api/utilizador/ID
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateUtilizador(int id, Utilizador utilizador)
         {
@@ -103,7 +103,7 @@ namespace LauGardensApi.Controllers
             return NoContent();
         }
 
-        // DELETE: api/utilizador/id - faz sentido
+        // DELETE: api/utilizador/id
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteUtilizador(int id)

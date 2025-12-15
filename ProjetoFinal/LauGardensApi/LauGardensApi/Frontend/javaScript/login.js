@@ -1,4 +1,4 @@
-﻿// URL da API
+﻿//URL API
 const API_URL = "https://localhost:7010/api/ControllerAutenticacao/login";
 
 document.addEventListener("DOMContentLoaded", () => {

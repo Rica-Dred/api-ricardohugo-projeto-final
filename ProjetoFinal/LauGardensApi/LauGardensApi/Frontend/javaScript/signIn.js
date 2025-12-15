@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            // Password Validation (Optional but good practice)
+            // Validar password e confirmação
             const password = document.getElementById("inputPass").value;
             const confirmPassword = document.getElementById("inputConfirmPass").value;
 
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const novoUtilizador = {
                 NomeUtilizador: document.getElementById("inputUser").value,
                 PasswordHash: password, // In plain text as per current system design
-                Role: "cliente" // Force role
+                Role: "cliente" //Role por default
             };
 
             try {
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 if (response.ok) {
-                    alert("Conta criada com sucesso! Por favor faça login.");
+                    alert("Conta criada com sucesso.");
                     window.location.href = "../pagLogin/login.html";
                 } else {
                     const errorMsg = await response.text();

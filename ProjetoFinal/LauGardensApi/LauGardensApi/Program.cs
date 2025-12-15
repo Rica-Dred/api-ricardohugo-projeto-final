@@ -109,8 +109,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("PermitirTudo",
         policy => policy
             .AllowAnyOrigin() 
-            .AllowAnyMethod() //qualquer m�todo (GET, POST, etc)
-            .AllowAnyHeader()); //qualquer cabe�alho
+            .AllowAnyMethod() //qualquer método (GET, POST...)
+            .AllowAnyHeader()); //qualquer cabecalho
 });
 
 var app = builder.Build();

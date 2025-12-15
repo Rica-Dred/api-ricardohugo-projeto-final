@@ -23,12 +23,12 @@ async function carregarPlantas() {
 
         const role = sessionStorage.getItem("role");
 
-        // Hide "Adicionar Planta" form if not admin
+        //Esconde "Add Planta" caso nao seja "admin"
         const formContainer = document.querySelector(".card.p-4.mb-4"); // Adjust selector based on HTML structure
-        const formTitle = document.querySelector("h4.mb-3"); // "Adicionar Nova Planta" title
+        const formTitle = document.querySelector("h4.mb-3"); // "Adicionar Nova Planta" titulo
 
         if (role !== "admin") {
-            // Esconder o formulário de criação
+            // Esconde o formulário de criação
             const form = document.getElementById("addPlantaForm");
             if (form) {
                 // Tenta esconder o card inteiro se conseguir encontrar o pai
@@ -43,7 +43,7 @@ async function carregarPlantas() {
 
 
 
-            // Delete button is ONLY for Admin
+            // btn apagar só para admin
             let deleteButtonHtml = "";
             if (role === "admin") {
                 deleteButtonHtml = `
@@ -135,7 +135,7 @@ function setupForm() {
             if (response.ok) {
                 alert("Planta adicionada com sucesso!");
                 form.reset();
-                carregarPlantas(); // Refresh list
+                carregarPlantas(); //Atualiza lista
             } else {
                 const errorMsg = await response.text();
                 alert("Erro ao adicionar: " + errorMsg);
@@ -148,7 +148,7 @@ function setupForm() {
 }
 
 window.removerPlanta = async function (id, nome) {
-    if (!confirm(`Tem a certeza que deseja eliminar a planta "${nome}"? Esta ação é irreversível.`)) {
+    if (!confirm(`Deseja eliminar a planta "${nome}"?`)) {
         return;
     }
 
@@ -164,7 +164,7 @@ window.removerPlanta = async function (id, nome) {
 
         if (response.ok || response.status === 204) {
             alert("Planta eliminada com sucesso.");
-            carregarPlantas(); // Refresh list
+            carregarPlantas(); //Atualiza lista
         } else {
             alert("Erro ao eliminar planta.");
         }
@@ -184,7 +184,6 @@ window.atualizarStock = async function (id) {
 
     try {
         // Construct URL manually since API_URL points to /api/Plantas
-        // Construct URL manually since API_URL points to /api/Plantas
         const token = sessionStorage.getItem("token");
         const headers = { "Content-Type": "application/json" };
         if (token) headers["Authorization"] = `Bearer ${token}`;
@@ -197,7 +196,6 @@ window.atualizarStock = async function (id) {
 
         if (response.ok) {
             alert("Stock atualizado com sucesso!");
-            // No need to reload everything, value is already there
         } else {
             const errorMsg = await response.text();
             alert("Erro ao atualizar stock: " + errorMsg);

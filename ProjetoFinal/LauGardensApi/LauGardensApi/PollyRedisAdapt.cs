@@ -19,7 +19,7 @@ namespace LauGardensApi
         }
 
         // Método de Leitura (GET)
-        // O Polly pede um 'object', nós vamos ao Redis, trazemos a string e convertemos
+        // O Polly pede um "object", nós vamos ao Redis, trazemos a string e convertemos
         public async Task<(bool, object)> TryGetAsync(string key, CancellationToken cancellationToken, bool continueOnCapturedContext)
         {
             var value = await _cache.GetStringAsync(key, cancellationToken);
@@ -48,7 +48,7 @@ namespace LauGardensApi
         {
             var options = new DistributedCacheEntryOptions
             {
-                // Usamos o Ttl (Time To Live) que vem da política do Polly
+                // Usamos Time To Live definido nas configs. do Polly 
                 AbsoluteExpirationRelativeToNow = ttl.Timespan
             };
 
