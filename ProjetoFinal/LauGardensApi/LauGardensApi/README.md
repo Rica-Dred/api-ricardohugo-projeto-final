@@ -44,6 +44,17 @@ A app permite aos utilizadores explorar um catálogo variado de plantas, adicion
 *   `Controllers/`: Controladores da API (`PlantasController`, `StocksController`, `ImagensController`).
 *   `Models/`: Definição de dados (`Planta`, `Utilizador`, `Reserva`).
 
+## Documentação e Testes (Swagger)
+
+A API disponibiliza uma interface interativa (Swagger UI) para testar os endpoints.
+
+1.  Certifique-se que o Backend está a correr.
+2.  Aceda a: `https://localhost:7010/swagger`
+3.  Nesta interface pode:
+    *   Verificar todos os endpoints disponíveis.
+    *   Consultar os esquemas de dados.
+    *   Testar pedidos diretamente no browser.
+
 ## Como Executar
 
 1.  Backend:
