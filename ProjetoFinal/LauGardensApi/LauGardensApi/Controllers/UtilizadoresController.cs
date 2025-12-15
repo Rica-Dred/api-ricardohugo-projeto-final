@@ -1,12 +1,13 @@
 ﻿using LauGardensApi.Data;
 using LauGardensApi.Data.Models;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Distributed; // Para o Redis
-using System.Numerics;
+using Polly;
+using Polly.Caching;
 using System.Text.Json; //deserializar/serializar dados 
+
 
 namespace LauGardensApi.Controllers
 {
@@ -24,13 +25,37 @@ namespace LauGardensApi.Controllers
         }
 
         // GET: api/utilizadores
-        [HttpGet]
-        [Authorize(Roles = "admin")]
-        public async Task<ActionResult<IEnumerable<Utilizador>>> GetUtilizadores()
+        [HttpGet][Authorize(Roles = "admin")]
+        public async Task<ActionResult<IEnumerable<Utilizador>>> GetUtilizadores([FromServices] IAsyncCacheProvider cacheProvider)
         {
-            var utilizadores = await _context.Utilizadores.ToListAsync();
+            // Define a política de cache com TTL de 10 minutos
+            var cachePolicy = Policy.CacheAsync<object>(cacheProvider, TimeSpan.FromMinutes(10));
 
-            return Ok(utilizadores);
+            try
+            {
+                // EXECUÇÃO PROTEGIDA: Tenta obter do cache (Redis) primeiro.
+                var resulFinal = await cachePolicy.ExecuteAsync(async (context) =>
+                {
+                    // ESTE CÓDIGO SÓ É EXECUTADO SE O CACHE FALHAR
+
+                    // BD: Acede à Base de Dados para obter a lista de Utilizadores
+                    var utilizadores = await _context.Utilizadores.ToListAsync();
+
+                    // Retorna o objeto para que o Polly guarde no Redis
+                    return (object)utilizadores;
+
+                }, new Context("lista_utilizadores_completa")); // Passa a chave do cache para a política
+
+                if (resulFinal == null) return NotFound();
+
+                // Retorna o resultado obtido (do Cache ou da BD)
+                return Ok(resulFinal);
+            }
+            catch (Exception)
+            {
+                // Se houver uma falha no Redis ou na BD, retorna 500.
+                return StatusCode(500, $"Erro ao carregar a lista de utilizadores.");
+            }
         }
 
         // GET: api/utilizador/ID

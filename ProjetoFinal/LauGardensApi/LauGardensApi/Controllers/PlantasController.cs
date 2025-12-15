@@ -6,8 +6,6 @@ using Microsoft.Extensions.Caching.Distributed; // Para o Redis
 using Polly;
 using Polly.Caching;
 using System.Text.Json;
-using System.Text.Json.Serialization; //deserializar/serializar dados 
-using System.Text.Json.Serialization; //deserializar/serializar dados 
 using Microsoft.AspNetCore.Authorization;
 
 namespace LauGardensApi.Controllers;
@@ -29,10 +27,29 @@ public class PlantasController : ControllerBase
 
     // GET: api/plantas
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Planta>>> GetPlantas()
+    public async Task<ActionResult<IEnumerable<Planta>>> GetPlantas([FromServices] IAsyncCacheProvider cacheProvider)
     {
-        var plantas = await _context.Plantas.Include(p => p.Stock).ToListAsync();
-        return Ok(plantas);
+        var cachePolicy = Policy.CacheAsync<object>(cacheProvider, TimeSpan.FromMinutes(10));
+
+        try
+        {
+            var resulFinal = await cachePolicy.ExecuteAsync(async (context) =>
+            {
+                //BD
+                var plantas = await _context.Plantas.Include(p => p.Stock).ToListAsync();
+                return (object)plantas;
+
+            }, new Context("lista_plantas_completa")); // Passa a chave do cache para a política usar
+
+            if (resulFinal == null) return NotFound();
+            return Ok(resulFinal);
+        }
+        catch (Exception)
+        {
+            // Tratamento de erros (ex: Redis inacessível, mas a BD funcionou)
+            // Se a BD falhar, isto apanha.
+            return StatusCode(500, $"Erro ao carregar plantas.");
+        }
     }
 
     // GET: api/plantas/ID
@@ -45,7 +62,7 @@ public class PlantasController : ControllerBase
         try
         {
             //so executado se o Polly não encontrar nada no cache
-            var finalResult = await cachePolicy.ExecuteAsync(async (context) =>
+            var resulFinal = await cachePolicy.ExecuteAsync(async (context) =>
             {
                 //BD
                 var planta = await _context.Plantas.FindAsync(id);
@@ -78,13 +95,13 @@ public class PlantasController : ControllerBase
 
             }, new Context($"planta_{id}"));
 
-            if (finalResult == null) return NotFound();
+            if (resulFinal == null) return NotFound();
 
-            return Ok(finalResult);
+            return Ok(resulFinal);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return StatusCode(500, ex.Message);
+            return StatusCode(500, $"Erro ao carregar plantas.");
         }
     }
 
@@ -104,6 +121,20 @@ public class PlantasController : ControllerBase
 
         _context.Plantas.Add(novaPlanta);
         await _context.SaveChangesAsync();
+
+        // Criar entrada de Stock automaticamente
+        var novoStock = new Stock
+        {
+            PlantaId = novaPlanta.Id,
+            Quantidade = plantaDto.QuantidadeInicial,
+            UltimaAtualizacao = DateTime.Now
+        };
+
+        _context.Stocks.Add(novoStock);
+        await _context.SaveChangesAsync();
+
+        await _cache.RemoveAsync("lista_plantas_completa"); // Invalida a lista de plantas
+
         return Ok(novaPlanta);
     }
 
@@ -119,6 +150,7 @@ public class PlantasController : ControllerBase
         await _context.SaveChangesAsync();
 
         await _cache.RemoveAsync($"planta_{id}"); //Remove cache antigo mantendo sempre atualizado
+        await _cache.RemoveAsync("lista_plantas_completa"); // Invalida a lista de plantas
 
         return NoContent();
     }
@@ -136,6 +168,7 @@ public class PlantasController : ControllerBase
         await _context.SaveChangesAsync();
 
         await _cache.RemoveAsync($"planta_{id}"); //Remove cache antigo mantendo sempre atualizado
+        await _cache.RemoveAsync("lista_plantas_completa"); // Invalida a lista de plantas
 
         return NoContent();
     }
